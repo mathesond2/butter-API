@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
 	"go-contacts/app"
 	"go-contacts/controllers"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -16,7 +17,10 @@ func main() {
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 	router.HandleFunc("/api/contacts/new", controllers.CreateContact).Methods("POST")
+	// router.HandleFunc("/api/{id}/contact", controllers.GetContact).Methods("PUT")
+	// router.HandleFunc("/api/{id}/contact", controllers.GetContact).Methods("DELETE")
 	router.HandleFunc("/api/me/contacts", controllers.GetContactsFor).Methods("GET") //  user/2/contacts
+	router.HandleFunc("/api/contact/{id}", controllers.GetContact).Methods("GET")
 
 	router.Use(app.JwtAuthentication) //attach JWT auth middleware
 
@@ -31,6 +35,6 @@ func main() {
 
 	err := http.ListenAndServe(":"+port, router) //Launch the app, visit localhost:8000/api
 	if err != nil {
-		fmt.Print(err)
+		fmt.Print(err, "zzz")
 	}
 }
