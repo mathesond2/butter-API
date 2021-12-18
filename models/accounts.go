@@ -1,12 +1,13 @@
 package models
 
 import (
-	"github.com/dgrijalva/jwt-go"
-	"github.com/jinzhu/gorm"
 	u "go-contacts/utils"
-	"golang.org/x/crypto/bcrypt"
 	"os"
 	"strings"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 /*
@@ -27,7 +28,6 @@ type Account struct {
 
 //Validate incoming user details...
 func (account *Account) Validate() (map[string]interface{}, bool) {
-
 	if !strings.Contains(account.Email, "@") {
 		return u.Message(false, "Email address is required"), false
 	}
@@ -51,8 +51,7 @@ func (account *Account) Validate() (map[string]interface{}, bool) {
 	return u.Message(false, "Requirement passed"), true
 }
 
-func (account *Account) Create() (map[string]interface{}) {
-
+func (account *Account) Create() map[string]interface{} {
 	if resp, ok := account.Validate(); !ok {
 		return resp
 	}
@@ -79,8 +78,7 @@ func (account *Account) Create() (map[string]interface{}) {
 	return response
 }
 
-func Login(email, password string) (map[string]interface{}) {
-
+func Login(email, password string) map[string]interface{} {
 	account := &Account{}
 	err := GetDB().Table("accounts").Where("email = ?", email).First(account).Error
 	if err != nil {
@@ -109,7 +107,6 @@ func Login(email, password string) (map[string]interface{}) {
 }
 
 func GetUser(u uint) *Account {
-
 	acc := &Account{}
 	GetDB().Table("accounts").Where("id = ?", u).First(acc)
 	if acc.Email == "" { //User not found!
