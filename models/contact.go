@@ -50,6 +50,32 @@ func (contact *Contact) Create() map[string]interface{} {
 	return resp
 }
 
+func Update(id uint64, reqcontact *Contact) map[string]interface{} {
+	if resp, ok := reqcontact.Validate(); !ok {
+		return resp
+	}
+
+	contact := &Contact{}
+	err := GetDB().Table("contacts").Where("id = ?", id).First(contact).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	contact.Name = reqcontact.Name
+	contact.Phone = reqcontact.Phone
+
+	updatedErr := GetDB().Table("contacts").Where("id = ?", id).Save(contact).Error
+	if updatedErr != nil {
+		fmt.Println(updatedErr)
+		return nil
+	}
+
+	resp := u.Message(true, "success")
+	resp["contact"] = contact
+	return resp
+}
+
 func GetContact(id uint64) *Contact {
 
 	contact := &Contact{}
