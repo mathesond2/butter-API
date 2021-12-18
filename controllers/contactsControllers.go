@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"go-contacts/models"
 	u "go-contacts/utils"
 	"net/http"
@@ -38,8 +37,8 @@ var GetContactsFor = func(w http.ResponseWriter, r *http.Request) {
 
 var GetContact = func(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	idNum, _ := strconv.ParseUint(vars["id"], 10, 32)
-	data := models.GetContact(idNum)
+	id, _ := strconv.ParseUint(vars["id"], 10, 32)
+	data := models.GetContact(id)
 	resp := u.Message(true, "success")
 	resp["data"] = data
 	u.Respond(w, resp)
@@ -48,7 +47,7 @@ var GetContact = func(w http.ResponseWriter, r *http.Request) {
 var UpdateContact = func(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint) //Grab the id of the user that send the request
 	vars := mux.Vars(r)
-	idNum, _ := strconv.ParseUint(vars["id"], 10, 32)
+	id, _ := strconv.ParseUint(vars["id"], 10, 32)
 
 	contact := &models.Contact{}
 
@@ -59,9 +58,15 @@ var UpdateContact = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	contact.UserId = user
-	fmt.Println(contact, "contact")
-	fmt.Println(idNum, "idNum")
+	resp := models.Update(id, contact)
+	u.Respond(w, resp)
+}
 
-	resp := models.Update(idNum, contact)
+var DeleteContact = func(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.ParseUint(vars["id"], 10, 32)
+	data := models.DeleteContact(id)
+	resp := u.Message(true, "success")
+	resp["data"] = data
 	u.Respond(w, resp)
 }

@@ -20,7 +20,6 @@ type Contact struct {
 returns message and true if the requirement is met
 */
 func (contact *Contact) Validate() (map[string]interface{}, bool) {
-
 	if contact.Name == "" {
 		return u.Message(false, "Contact name should be on the payload"), false
 	}
@@ -38,7 +37,6 @@ func (contact *Contact) Validate() (map[string]interface{}, bool) {
 }
 
 func (contact *Contact) Create() map[string]interface{} {
-
 	if resp, ok := contact.Validate(); !ok {
 		return resp
 	}
@@ -76,8 +74,27 @@ func Update(id uint64, reqcontact *Contact) map[string]interface{} {
 	return resp
 }
 
-func GetContact(id uint64) *Contact {
+func DeleteContact(id uint64) *Contact {
+	contact := &Contact{}
 
+	contactBeforeDeletion := &Contact{}
+	err := GetDB().Table("contacts").Where("id = ?", id).First(contactBeforeDeletion).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	deleteErr := GetDB().Table("contacts").Where("id = ?", id).Delete(contact).Error
+	if deleteErr != nil {
+		fmt.Println(deleteErr)
+		return nil
+	}
+	//todo: fix this..returning null
+	contactBeforeDeletion.DeletedAt = contact.DeletedAt
+	return contactBeforeDeletion
+}
+
+func GetContact(id uint64) *Contact {
 	contact := &Contact{}
 	err := GetDB().Table("contacts").Where("id = ?", id).First(contact).Error
 	if err != nil {
@@ -88,7 +105,6 @@ func GetContact(id uint64) *Contact {
 }
 
 func GetContacts(user uint) []*Contact {
-
 	contacts := make([]*Contact, 0)
 	err := GetDB().Table("contacts").Where("user_id = ?", user).Find(&contacts).Error
 	if err != nil {
