@@ -20,7 +20,7 @@ func main() {
 	router.HandleFunc("/api/{id}/contact", controllers.UpdateContact).Methods("PUT")
 	router.HandleFunc("/api/{id}/contact", controllers.DeleteContact).Methods("DELETE")
 	router.HandleFunc("/api/{id}/contact", controllers.GetContact).Methods("GET")
-	router.HandleFunc("/api/me/contacts", controllers.GetContactsFor).Methods("GET") //  user/2/contacts
+	router.HandleFunc("/api/me/contacts", controllers.GetContacts).Methods("GET") //  user/2/contacts
 
 	router.Use(app.JwtAuthentication) //attach JWT auth middleware
 
@@ -35,6 +35,6 @@ func main() {
 
 	err := http.ListenAndServe(":"+port, router) //Launch the app, visit localhost:8000/api
 	if err != nil {
-		fmt.Print(err, "zzz")
+		fmt.Print(err)
 	}
 }

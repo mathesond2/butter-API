@@ -11,7 +11,6 @@ import (
 )
 
 var CreateContact = func(w http.ResponseWriter, r *http.Request) {
-
 	user := r.Context().Value("user").(uint) //Grab the id of the user that send the request
 	contact := &models.Contact{}
 
@@ -26,8 +25,7 @@ var CreateContact = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-var GetContactsFor = func(w http.ResponseWriter, r *http.Request) {
-
+var GetContacts = func(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("user").(uint)
 	data := models.GetContacts(id)
 	resp := u.Message(true, "success")
