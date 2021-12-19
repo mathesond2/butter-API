@@ -65,6 +65,15 @@ var GetContact = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
+var GetInvoice = func(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.ParseUint(vars["id"], 10, 32)
+	data := models.GetInvoice(id)
+	resp := u.Message(true, "success")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
 var UpdateContact = func(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint) //Grab the id of the user that send the request
 	vars := mux.Vars(r)

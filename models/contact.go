@@ -152,6 +152,16 @@ func GetContact(id uint64) *Contact {
 	return contact
 }
 
+func GetInvoice(id uint64) *Invoice {
+	invoice := &Invoice{}
+	err := GetDB().Table("invoices").Where("id = ?", id).First(invoice).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return invoice
+}
+
 func GetContacts(user uint) []*Contact {
 	contacts := make([]*Contact, 0)
 	err := GetDB().Table("contacts").Where("user_id = ?", user).Find(&contacts).Error
