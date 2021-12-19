@@ -16,6 +16,9 @@ func main() {
 
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
+
+	router.HandleFunc("/api/invoices/new", controllers.CreateInvoice).Methods("POST")
+
 	router.HandleFunc("/api/contacts/new", controllers.CreateContact).Methods("POST")
 	router.HandleFunc("/api/{id}/contact", controllers.UpdateContact).Methods("PUT")
 	router.HandleFunc("/api/{id}/contact", controllers.DeleteContact).Methods("DELETE")

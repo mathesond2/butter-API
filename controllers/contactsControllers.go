@@ -25,6 +25,21 @@ var CreateContact = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
+var CreateInvoice = func(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value("user").(uint) //Grab the id of the user that send the request
+	invoice := &models.Invoice{}
+
+	err := json.NewDecoder(r.Body).Decode(invoice)
+	if err != nil {
+		u.Respond(w, u.Message(false, "Error while decoding request body"))
+		return
+	}
+
+	invoice.UserId = user
+	resp := invoice.CreateInvoice()
+	u.Respond(w, resp)
+}
+
 var GetContacts = func(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("user").(uint)
 	data := models.GetContacts(id)

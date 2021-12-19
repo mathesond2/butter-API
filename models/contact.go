@@ -14,6 +14,43 @@ type Contact struct {
 	UserId uint   `json:"user_id"` //The user that this contact belongs to
 }
 
+type Invoice struct {
+	gorm.Model
+	Name              string `json:"name"`
+	Description       string `json:"description"`
+	UserId            uint   `json:"user_id"` //The user that this invoice belongs to
+	Sender_Address    string `json:"sender_address"`
+	Token_Address     string `json:"token_address"`
+	Amount            uint   `json:"amount"`
+	To                string `json:"to"`
+	Recipient_Address string `json:"recipient_address"`
+}
+
+func (invoice *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
+	if invoice.Sender_Address == "" {
+		return u.Message(false, "sender address should be on the payload"), false
+	}
+
+	if invoice.Token_Address == "" {
+		return u.Message(false, "token should be on the payload"), false
+	}
+
+	if invoice.Amount <= 0 {
+		return u.Message(false, "amount should be on the payload"), false
+	}
+
+	if invoice.Recipient_Address == "" {
+		return u.Message(false, "recipient address should be on the payload"), false
+	}
+
+	if invoice.UserId <= 0 {
+		return u.Message(false, "User is not recognized"), false
+	}
+
+	//All the required parameters are present
+	return u.Message(true, "success"), true
+}
+
 /*
  This struct function validate the required parameters sent through the http request body
 
@@ -34,6 +71,18 @@ func (contact *Contact) Validate() (map[string]interface{}, bool) {
 
 	//All the required parameters are present
 	return u.Message(true, "success"), true
+}
+
+func (invoice *Invoice) CreateInvoice() map[string]interface{} {
+	if resp, ok := invoice.ValidateInvoice(); !ok {
+		return resp
+	}
+
+	GetDB().Create(invoice)
+
+	resp := u.Message(true, "success")
+	resp["invoice"] = invoice
+	return resp
 }
 
 func (contact *Contact) Create() map[string]interface{} {
