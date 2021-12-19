@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"go-contacts/app"
-	"go-contacts/controllers"
+	"go-invoices/app"
+	"go-invoices/controllers"
 	"net/http"
 	"os"
 

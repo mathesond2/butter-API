@@ -1,7 +1,7 @@
 package models
 
 import (
-	u "go-contacts/utils"
+	u "go-invoices/utils"
 	"os"
 	"strings"
 
