@@ -92,6 +92,24 @@ var UpdateContact = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
+var UpdateInvoice = func(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value("user").(uint)
+	vars := mux.Vars(r)
+	id, _ := strconv.ParseUint(vars["id"], 10, 32)
+
+	invoice := &models.Invoice{}
+
+	err := json.NewDecoder(r.Body).Decode(invoice)
+	if err != nil {
+		u.Respond(w, u.Message(false, "Error while decoding request body"))
+		return
+	}
+
+	invoice.UserId = user
+	resp := models.UpdateInvoice(id, invoice)
+	u.Respond(w, resp)
+}
+
 var DeleteContact = func(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.ParseUint(vars["id"], 10, 32)

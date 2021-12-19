@@ -122,6 +122,37 @@ func Update(id uint64, reqcontact *Contact) map[string]interface{} {
 	return resp
 }
 
+func UpdateInvoice(id uint64, reqinvoice *Invoice) map[string]interface{} {
+	if resp, ok := reqinvoice.ValidateInvoice(); !ok {
+		return resp
+	}
+
+	invoice := &Invoice{}
+	err := GetDB().Table("invoices").Where("id = ?", id).First(invoice).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	invoice.Name = reqinvoice.Name
+	invoice.Description = reqinvoice.Description
+	invoice.Sender_Address = reqinvoice.Sender_Address
+	invoice.Token_Address = reqinvoice.Token_Address
+	invoice.Amount = reqinvoice.Amount
+	invoice.To = reqinvoice.To
+	invoice.Recipient_Address = reqinvoice.Recipient_Address
+
+	updatedErr := GetDB().Table("invoices").Where("id = ?", id).Save(invoice).Error
+	if updatedErr != nil {
+		fmt.Println(updatedErr)
+		return nil
+	}
+
+	resp := u.Message(true, "success")
+	resp["invoice"] = invoice
+	return resp
+}
+
 func DeleteContact(id uint64) *Contact {
 	contact := &Contact{}
 
