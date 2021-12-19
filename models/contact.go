@@ -173,6 +173,26 @@ func DeleteContact(id uint64) *Contact {
 	return contactBeforeDeletion
 }
 
+func DeleteInvoice(id uint64) *Invoice {
+	invoice := &Invoice{}
+
+	invoiceBeforeDeletion := &Invoice{}
+	err := GetDB().Table("invoices").Where("id = ?", id).First(invoiceBeforeDeletion).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	deleteErr := GetDB().Table("invoices").Where("id = ?", id).Delete(invoice).Error
+	if deleteErr != nil {
+		fmt.Println(deleteErr)
+		return nil
+	}
+	//todo: fix this..returning null
+	invoiceBeforeDeletion.DeletedAt = invoice.DeletedAt
+	return invoiceBeforeDeletion
+}
+
 func GetContact(id uint64) *Contact {
 	contact := &Contact{}
 	err := GetDB().Table("contacts").Where("id = ?", id).First(contact).Error
