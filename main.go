@@ -11,13 +11,12 @@ import (
 )
 
 func main() {
-
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 
-	router.HandleFunc("/api/invoices/new", controllers.CreateInvoice).Methods("POST")
+	router.HandleFunc("/api/invoice/new", controllers.CreateInvoice).Methods("POST")
 	router.HandleFunc("/api/{id}/invoice", controllers.UpdateInvoice).Methods("PUT")
 	router.HandleFunc("/api/{id}/invoice", controllers.DeleteInvoice).Methods("DELETE")
 	router.HandleFunc("/api/{id}/invoice", controllers.GetInvoice).Methods("GET")
@@ -34,7 +33,7 @@ func main() {
 
 	fmt.Println(port)
 
-	err := http.ListenAndServe(":"+port, router) //Launch the app, visit localhost:8000/api
+	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
 		fmt.Print(err)
 	}
