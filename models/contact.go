@@ -32,7 +32,7 @@ func (invoice *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
 	}
 
 	if invoice.Token_Address == "" {
-		return u.Message(false, "token should be on the payload"), false
+		return u.Message(false, "token address should be on the payload"), false
 	}
 
 	if invoice.Amount <= 0 {
@@ -47,7 +47,6 @@ func (invoice *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
 		return u.Message(false, "User is not recognized"), false
 	}
 
-	//All the required parameters are present
 	return u.Message(true, "success"), true
 }
 
@@ -162,4 +161,15 @@ func GetContacts(user uint) []*Contact {
 	}
 
 	return contacts
+}
+
+func GetInvoices(user uint) []*Invoice {
+	invoices := make([]*Invoice, 0)
+	err := GetDB().Table("invoices").Where("user_id = ?", user).Find(&invoices).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return invoices
 }

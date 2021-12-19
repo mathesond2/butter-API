@@ -40,6 +40,14 @@ var CreateInvoice = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
+var GetInvoices = func(w http.ResponseWriter, r *http.Request) {
+	id := r.Context().Value("user").(uint)
+	data := models.GetInvoices(id)
+	resp := u.Message(true, "success")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
 var GetContacts = func(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("user").(uint)
 	data := models.GetContacts(id)
