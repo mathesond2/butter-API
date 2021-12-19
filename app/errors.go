@@ -1,7 +1,7 @@
 package app
 
 import (
-	u "go-contacts/utils"
+	u "go-invoices/utils"
 	"net/http"
 )
 
