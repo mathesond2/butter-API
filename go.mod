@@ -17,7 +17,7 @@ require (
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
 	github.com/jinzhu/now v1.0.1 // indirect
-	github.com/lib/pq v1.0.0 // indirect
+	github.com/lib/pq v1.10.4 // indirect
 	github.com/mattn/go-sqlite3 v1.11.0 // indirect
 	google.golang.org/appengine v1.6.4 // indirect
 )

@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"go-invoices/app"
 	"go-invoices/controllers"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -37,4 +40,10 @@ func main() {
 	if err != nil {
 		fmt.Print(err)
 	}
+
+	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }
