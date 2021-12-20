@@ -15,13 +15,13 @@ import (
 var JwtAuthentication = func(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var num int
-		getInvoiceEndpoint := fmt.Sprintf("/api/{%v}/invoice", num)
+		// var num int
+		// getInvoiceEndpoint := fmt.Sprintf("/api/{%v}/invoice", num)
 
 		notAuth := []string{
 			"/api/user/new",
 			"/api/user/login",
-			getInvoiceEndpoint,
+			"/api/:id/invoice",
 		} //List of endpoints that doesn't require auth
 		requestPath := r.URL.Path //current request path
 
