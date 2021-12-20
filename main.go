@@ -4,16 +4,17 @@ import (
 	"fmt"
 	"go-invoices/app"
 	"go-invoices/controllers"
-	"log"
+	m "go-invoices/models"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 )
 
 func main() {
+	m.GetDB()
+
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
@@ -41,9 +42,8 @@ func main() {
 		fmt.Print(err)
 	}
 
-	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	// db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 }
