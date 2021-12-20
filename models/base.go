@@ -6,14 +6,13 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/joho/godotenv"
 )
 
 func GetDB() *gorm.DB {
-	e := godotenv.Load()
-	if e != nil {
-		fmt.Print(e)
-	}
+	// e := godotenv.Load()
+	// if e != nil {
+	// 	fmt.Print(e)
+	// }
 
 	username := os.Getenv("db_user")
 	password := os.Getenv("db_pass")
