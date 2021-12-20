@@ -19,6 +19,7 @@ func main() {
 
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
+	router.HandleFunc("/webhooks/goofyboy", controllers.GetTxn).Methods("POST")
 
 	router.HandleFunc("/api/invoice/new", controllers.CreateInvoice).Methods("POST")
 	router.HandleFunc("/api/{id}/invoice", controllers.UpdateInvoice).Methods("PUT")

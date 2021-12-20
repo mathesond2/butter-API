@@ -22,6 +22,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		notAuth := []string{
 			"/api/user/new",
 			"/api/user/login",
+			"/webhooks/goofyboy",
 		} //List of endpoints that doesn't require auth
 		requestPath := r.URL.Path //current request path
 
