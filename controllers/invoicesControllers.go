@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"go-invoices/models"
 	u "go-invoices/utils"
 	"net/http"
@@ -16,6 +17,7 @@ var CreateInvoice = func(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(invoice)
 	if err != nil {
+		fmt.Println(err, "zzz")
 		u.Respond(w, u.Message(false, "Error while decoding request body"))
 		return
 	}
