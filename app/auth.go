@@ -16,7 +16,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var num int
-		getInvoiceEndpoint := fmt.Sprintf("api/{%v}/invoice", num)
+		getInvoiceEndpoint := fmt.Sprintf("/api/{%v}/invoice", num)
 
 		notAuth := []string{
 			"/api/user/new",
