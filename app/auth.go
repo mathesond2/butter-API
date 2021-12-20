@@ -7,6 +7,7 @@ import (
 	u "go-invoices/utils"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
@@ -21,13 +22,16 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		notAuth := []string{
 			"/api/user/new",
 			"/api/user/login",
-			"/api/:id/invoice",
 		} //List of endpoints that doesn't require auth
 		requestPath := r.URL.Path //current request path
 
+		if matched, _ := regexp.MatchString("/api/.*\\.?/invoice", requestPath); matched {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		//check if request does not need authentication, serve the request if it doesn't need it
 		for _, value := range notAuth {
-
 			if value == requestPath {
 				next.ServeHTTP(w, r)
 				return
