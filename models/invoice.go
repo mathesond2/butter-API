@@ -17,6 +17,7 @@ type Invoice struct {
 	Amount            uint   `json:"amount"`
 	To                string `json:"to"`
 	Recipient_Address string `json:"recipient_address"`
+	Status            string `json:"status"`
 }
 
 func (invoice *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
@@ -74,6 +75,7 @@ func UpdateInvoice(id uint64, reqinvoice *Invoice) map[string]interface{} {
 	invoice.Amount = reqinvoice.Amount
 	invoice.To = reqinvoice.To
 	invoice.Recipient_Address = reqinvoice.Recipient_Address
+	invoice.Status = reqinvoice.Status
 
 	updatedErr := GetDB().Table("invoices").Where("id = ?", id).Save(invoice).Error
 	if updatedErr != nil {
