@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"go-invoices/models"
 	u "go-invoices/utils"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -43,12 +44,11 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 	bytesData, _ := json.Marshal(params)
 	reader := bytes.NewReader(bytesData)
 
-	// data, err := http.PostForm("http://stormy-cove-04196.herokuapp.com/api/associatedTxn", blah)
 	request, error := http.NewRequest(
 		http.MethodPost,
-		"http://stormy-cove-04196.herokuapp.com/api/associatedTxn",
+		// "http://stormy-cove-04196.herokuapp.com/api/associatedTxn",
+		"http://localhost:8000/api/associatedTxn",
 		reader,
-		// strings.NewReader(blah.Encode()),
 	)
 	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
 	if error != nil {
@@ -62,29 +62,35 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 	}
 	defer response.Body.Close()
 
-	invoice := &models.Invoice{}
-	decodeInvoiceErr := json.NewDecoder(response.Body).Decode(invoice)
-	if decodeInvoiceErr != nil {
-		fmt.Println(decodeInvoiceErr)
-		u.Respond(w, u.Message(false, "GetTxn: Error while decoding request body"))
-		return
-	}
-	// body, err := ioutil.ReadAll(response.Body)
-	// if err != nil {
-	// 	print("read body error: ", err)
+	// invoice := &models.Invoice{}
+	// decodeInvoiceErr := json.NewDecoder(response.Body).Decode(invoice)
+	// if decodeInvoiceErr != nil {
+	// 	fmt.Println("zzzz", decodeInvoiceErr)
+	// 	u.Respond(w, u.Message(false, "GetTxn: Error while decoding request body"))
+	// 	return
 	// }
 
-	// fmt.Println("response Body:", string(body))
+	// fmt.Println("invoice: ", invoice)
 
-	// defer data.Body.Close()
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		print("read body error: ", err)
+	}
+
+	fmt.Println("response Body:", string(body))
+
+	var data map[string]interface{}
+	json.Unmarshal(body, &data)
+	fmt.Printf("Results: %v\n", data)
+
+	// defer body.Close()
 	// body, err := ioutil.ReadAll(data.Body)
 	// if err != nil {
 	// 	print("read body error: ", err)
 	// }
 
 	// fmt.Print(string(body))
-	// ioutil.ReadAll
 	resp := u.Message(true, "success")
-	resp["data"] = invoice
+	resp["data"] = data["data"]
 	u.Respond(w, resp)
 }

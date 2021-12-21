@@ -17,7 +17,7 @@ type Invoice struct {
 	Amount            uint   `json:"amount"`
 	To                string `json:"to"`
 	Recipient_Address string `json:"recipient_address"`
-	Status            string `json:"status"`
+	Status            bool   `json:"status"`
 }
 
 func (invoice *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
