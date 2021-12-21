@@ -66,7 +66,7 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 	decodeInvoiceErr := json.NewDecoder(response.Body).Decode(invoice)
 	if decodeInvoiceErr != nil {
 		fmt.Println(decodeInvoiceErr)
-		u.Respond(w, u.Message(false, "GetAssociatedTxn: Error while decoding request body"))
+		u.Respond(w, u.Message(false, "GetTxn: Error while decoding request body"))
 		return
 	}
 	// body, err := ioutil.ReadAll(response.Body)
