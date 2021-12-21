@@ -77,7 +77,7 @@ var GetAssociatedTxn = func(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(latestTxn)
 	if err != nil {
 		fmt.Println(err)
-		u.Respond(w, u.Message(false, "Error while decoding request body"))
+		u.Respond(w, u.Message(false, "GetAssociatedTxn: Error while decoding request body"))
 		return
 	}
 

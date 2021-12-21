@@ -15,7 +15,7 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(txn)
 	if err != nil {
-		u.Respond(w, u.Message(false, "Error while decoding request body"))
+		u.Respond(w, u.Message(false, "GetTxn: Error while decoding request body"))
 		return
 	}
 
@@ -43,5 +43,6 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("data	", data)
 
 	resp := u.Message(true, "success")
+	resp["data"] = data
 	u.Respond(w, resp)
 }

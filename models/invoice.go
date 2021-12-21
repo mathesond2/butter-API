@@ -142,7 +142,7 @@ func GetAssociatedTxn(txn *Transaction) *Invoice {
 	}).First(&invoice).Error
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err, "GetAssociatedTxn")
 		return nil
 	}
 
