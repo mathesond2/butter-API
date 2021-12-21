@@ -8,6 +8,7 @@ import (
 	u "go-invoices/utils"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 var GetTxn = func(w http.ResponseWriter, r *http.Request) {
@@ -20,17 +21,11 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Print(string(txn.WatchedAddress))
-
-	// blah := url.Values{
-	// 	"asset":          {txn.Asset},
-	// 	"status":         {txn.Status},
-	// 	"from":           {txn.From},
-	// 	"to":             {txn.To},
-	// 	"watchedAddress": {txn.WatchedAddress},
-	// 	"value":          {txn.Value},
-	// 	"direction":      {txn.Direction},
-	// }
+	parseValueStr, parseFloatErr := strconv.ParseFloat(txn.Value, 64)
+	if parseFloatErr != nil {
+		fmt.Println("parseFloatErr: ", parseFloatErr)
+	}
+	parsedTxnValue := parseValueStr / 1000000000000000000 //todo...do better than this
 
 	params := make(map[string]interface{})
 	params["asset"] = txn.Asset
@@ -38,7 +33,7 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 	params["from"] = txn.From
 	params["to"] = txn.To
 	params["watchedAddress"] = txn.WatchedAddress
-	params["value"] = txn.Value
+	params["value"] = parsedTxnValue
 	params["direction"] = txn.Direction
 
 	bytesData, _ := json.Marshal(params)

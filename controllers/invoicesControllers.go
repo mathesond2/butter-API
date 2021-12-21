@@ -72,7 +72,7 @@ var GetInvoices = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var GetAssociatedTxn = func(w http.ResponseWriter, r *http.Request) {
-	latestTxn := &models.Transaction{}
+	latestTxn := &models.ParsedTransaction{}
 
 	err := json.NewDecoder(r.Body).Decode(latestTxn)
 	if err != nil {

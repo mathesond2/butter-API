@@ -9,15 +9,15 @@ import (
 
 type Invoice struct {
 	gorm.Model
-	Name              string `json:"name"`
-	Description       string `json:"description"`
-	UserId            uint   `json:"user_id"` //The user that this invoice belongs to
-	Sender_Address    string `json:"sender_address"`
-	Token_Address     string `json:"token_address"`
-	Amount            uint   `json:"amount"`
-	To                string `json:"to"`
-	Recipient_Address string `json:"recipient_address"`
-	Status            string `json:"status"`
+	Name              string  `json:"name"`
+	Description       string  `json:"description"`
+	UserId            uint    `json:"user_id"` //The user that this invoice belongs to
+	Sender_Address    string  `json:"sender_address"`
+	Token_Address     string  `json:"token_address"`
+	Amount            float64 `json:"amount"`
+	To                string  `json:"to"`
+	Recipient_Address string  `json:"recipient_address"`
+	Status            string  `json:"status"`
 }
 
 func (invoice *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
@@ -129,16 +129,13 @@ func GetInvoices(user uint64) []*Invoice {
 	return invoices
 }
 
-func GetAssociatedTxn(txn *Transaction) *Invoice {
+func GetAssociatedTxn(txn *ParsedTransaction) *Invoice {
 	invoice := &Invoice{}
-	// val, _ := strconv.ParseUint(txn.Value, 10, 64)
-	// blah := uint(val)
 
-	// uppercaseWatchedAddress := strings.ToUpper(txn.WatchedAddress) //hack...remove
 	err := GetDB().Table("invoices").Where(&Invoice{
 		Sender_Address:    txn.WatchedAddress,
 		Recipient_Address: txn.To,
-		// Amount:            blah,
+		Amount:            txn.Value,
 	}).First(&invoice).Error
 	if err != nil {
 		fmt.Println(err, "GetAssociatedTxn")
