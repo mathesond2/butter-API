@@ -17,7 +17,7 @@ type Invoice struct {
 	Amount            uint   `json:"amount"`
 	To                string `json:"to"`
 	Recipient_Address string `json:"recipient_address"`
-	Status            bool   `json:"status"`
+	Status            string `json:"status"`
 }
 
 func (invoice *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
@@ -145,11 +145,11 @@ func GetAssociatedTxn(txn *Transaction) *Invoice {
 		return nil
 	}
 
-	var status bool
+	var status string
 	if txn.Status == "confirmed" {
-		status = true
+		status = "confirmed"
 	} else {
-		status = false
+		status = "pending"
 	}
 	invoice.Status = status
 
