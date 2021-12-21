@@ -53,6 +53,7 @@ type Transaction struct {
 	From           string `json:"from"`
 	To             string `json:"to"`
 	WatchedAddress string `json:"watchedAddress"`
+	Value          string `json:"value"`
 	Direction      string `json:"direction"`
 }
 

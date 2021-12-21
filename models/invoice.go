@@ -118,7 +118,7 @@ func GetInvoice(id uint64) *Invoice {
 	return invoice
 }
 
-func GetInvoices(user uint) []*Invoice {
+func GetInvoices(user uint64) []*Invoice {
 	invoices := make([]*Invoice, 0)
 	err := GetDB().Table("invoices").Where("user_id = ?", user).Find(&invoices).Error
 	if err != nil {
@@ -127,4 +127,26 @@ func GetInvoices(user uint) []*Invoice {
 	}
 
 	return invoices
+}
+
+func GetAssociatedTxn(txn *Transaction) *Invoice {
+	invoice := &Invoice{}
+	// val, _ := strconv.ParseUint(txn.Value, 10, 64)
+	// blah := uint(val)
+
+	// uppercaseWatchedAddress := strings.ToUpper(txn.WatchedAddress) //hack...remove
+	err := GetDB().Table("invoices").Where(&Invoice{
+		Sender_Address:    txn.WatchedAddress,
+		Recipient_Address: txn.To,
+		// Amount:            blah,
+	}).First(&invoice).Error
+
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	fmt.Println(txn.WatchedAddress, "watched address")
+
+	return invoice
 }
