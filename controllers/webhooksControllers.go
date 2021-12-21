@@ -46,8 +46,8 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 
 	request, error := http.NewRequest(
 		http.MethodPost,
-		// "http://stormy-cove-04196.herokuapp.com/api/associatedTxn",
-		"http://localhost:8000/api/associatedTxn",
+		"http://stormy-cove-04196.herokuapp.com/api/associatedTxn",
+		// "http://localhost:8000/api/associatedTxn",
 		reader,
 	)
 	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
