@@ -15,12 +15,14 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(txn)
 	if err != nil {
+		fmt.Println(err, "zzz")
 		u.Respond(w, u.Message(false, "GetTxn: Error while decoding request body"))
 		return
 	}
 
 	fmt.Print(string(txn.WatchedAddress))
-	data, err := http.PostForm("http://stormy-cove-04196.herokuapp.com/api/associatedTxn", url.Values{
+
+	blah := url.Values{
 		"asset":          {txn.Asset},
 		"status":         {txn.Status},
 		"from":           {txn.From},
@@ -28,7 +30,9 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 		"watchedAddress": {txn.WatchedAddress},
 		"value":          {txn.Value},
 		"direction":      {txn.Direction},
-	})
+	}
+
+	data, err := http.PostForm("http://stormy-cove-04196.herokuapp.com/api/associatedTxn", blah)
 	if err != nil {
 		fmt.Println("Error is req: ", err)
 	}
@@ -36,7 +40,7 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 	defer data.Body.Close()
 	body, err := ioutil.ReadAll(data.Body)
 	if err != nil {
-		print(err)
+		print("read body error: ", err)
 	}
 
 	fmt.Print(string(body))
