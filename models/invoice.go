@@ -146,7 +146,7 @@ func GetAssociatedTxn(txn *Transaction) *Invoice {
 	}
 
 	var status bool
-	if txn.Status == "pending" {
+	if txn.Status == "confirmed" {
 		status = true
 	} else {
 		status = false
