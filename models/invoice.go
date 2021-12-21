@@ -140,13 +140,24 @@ func GetAssociatedTxn(txn *Transaction) *Invoice {
 		Recipient_Address: txn.To,
 		// Amount:            blah,
 	}).First(&invoice).Error
-
 	if err != nil {
 		fmt.Println(err, "GetAssociatedTxn")
 		return nil
 	}
 
-	fmt.Println(txn.WatchedAddress, "watched address")
+	var status bool
+	if txn.Status == "pending" {
+		status = true
+	} else {
+		status = false
+	}
+	invoice.Status = status
+
+	updatedErr := GetDB().Table("invoices").Where("id = ?", invoice.ID).Save(invoice).Error
+	if updatedErr != nil {
+		fmt.Println(updatedErr)
+		return nil
+	}
 
 	return invoice
 }
