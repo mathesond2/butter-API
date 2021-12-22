@@ -172,7 +172,7 @@ var AddWallet = func(w http.ResponseWriter, r *http.Request) {
 
 var AddWebhook = func(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
-	webhook := &models.Webhook{}
+	webhook := &models.PreParsedWebhook{}
 
 	err := json.NewDecoder(r.Body).Decode(webhook)
 	if err != nil {
@@ -182,6 +182,16 @@ var AddWebhook = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	webhook.UserId = user
-	resp := models.CreateWebhook(webhook)
+	hackyArrToStr := strings.Join(webhook.Networks, " ")
+
+	parsedWebhook := &models.Webhook{
+		Address:      webhook.Address,
+		Networks:     hackyArrToStr,
+		Name:         webhook.Name,
+		Endpoint_Url: webhook.Endpoint_Url,
+		UserId:       user,
+	}
+
+	resp := models.CreateWebhook(parsedWebhook)
 	u.Respond(w, resp)
 }

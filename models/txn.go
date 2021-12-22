@@ -59,12 +59,20 @@ func GetAssociatedTxn(txn *ParsedTransaction) *Invoice {
 	return invoice
 }
 
+type PreParsedWebhook struct {
+	Address      string   `json:"address"`
+	Networks     []string `json:"networks"`
+	Name         string   `json:"name"`
+	Endpoint_Url string   `json:"endpoint_url"`
+	UserId       uint     `json:"user_id"`
+}
 type Webhook struct {
-	Address     string   `json:"address"`
-	Networks    []string `json:"networks"`
-	Name        string   `json:"name"`
-	EndpointUrl string   `json:"endpointUrl"`
-	UserId      uint     `json:"userId"`
+	gorm.Model
+	Address      string `json:"address"`
+	Networks     string `json:"networks"`
+	Name         string `json:"name"`
+	Endpoint_Url string `json:"endpoint_url"`
+	UserId       uint   `json:"user_id"`
 }
 
 func (webhook *Webhook) ValidateWebhook() (map[string]interface{}, bool) {
@@ -72,7 +80,7 @@ func (webhook *Webhook) ValidateWebhook() (map[string]interface{}, bool) {
 		return u.Message(false, "address should be on the payload"), false
 	}
 
-	if len(webhook.Networks) == 0 {
+	if webhook.Networks == "" {
 		return u.Message(false, "chosen networks should be on the payload"), false
 	}
 
@@ -80,8 +88,8 @@ func (webhook *Webhook) ValidateWebhook() (map[string]interface{}, bool) {
 		return u.Message(false, "webhook name should be on the payload"), false
 	}
 
-	if webhook.EndpointUrl == "" {
-		return u.Message(false, "endpointUrl should be on the payload"), false
+	if webhook.Endpoint_Url == "" {
+		return u.Message(false, "endpoint_url should be on the payload"), false
 	}
 
 	if webhook.UserId <= 0 {

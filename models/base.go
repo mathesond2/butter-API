@@ -34,7 +34,7 @@ func GetDB() *gorm.DB {
 		fmt.Print(err)
 	}
 
-	db.Debug().AutoMigrate(&Account{}, &Invoice{})
+	db.Debug().AutoMigrate(&Account{}, &Invoice{}, &Webhook{})
 
 	return db
 }

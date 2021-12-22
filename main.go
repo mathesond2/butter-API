@@ -21,7 +21,7 @@ func main() {
 	router.HandleFunc("/api/walletAddress/new", controllers.AddWallet).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 	router.HandleFunc("/webhooks/mempoolEvent", controllers.ParseMempoolEvent).Methods("POST")
-	router.HandleFunc("/webhooks/add", controllers.AddWebhook).Methods("POST")
+	router.HandleFunc("/api/webhooks/add", controllers.AddWebhook).Methods("POST")
 	router.HandleFunc("/api/associatedTxn", controllers.GetAssociatedTxn).Methods("POST")
 
 	router.HandleFunc("/api/invoice/new", controllers.CreateInvoice).Methods("POST")
