@@ -57,16 +57,6 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 	}
 	defer response.Body.Close()
 
-	// invoice := &models.Invoice{}
-	// decodeInvoiceErr := json.NewDecoder(response.Body).Decode(invoice)
-	// if decodeInvoiceErr != nil {
-	// 	fmt.Println("zzzz", decodeInvoiceErr)
-	// 	u.Respond(w, u.Message(false, "GetTxn: Error while decoding request body"))
-	// 	return
-	// }
-
-	// fmt.Println("invoice: ", invoice)
-
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		print("read body error: ", err)
@@ -78,13 +68,6 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(body, &data)
 	fmt.Printf("Results: %v\n", data)
 
-	// defer body.Close()
-	// body, err := ioutil.ReadAll(data.Body)
-	// if err != nil {
-	// 	print("read body error: ", err)
-	// }
-
-	// fmt.Print(string(body))
 	resp := u.Message(true, "success")
 	resp["data"] = data["data"]
 	u.Respond(w, resp)

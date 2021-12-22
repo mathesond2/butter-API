@@ -11,7 +11,7 @@ type Invoice struct {
 	gorm.Model
 	Name              string  `json:"name"`
 	Description       string  `json:"description"`
-	UserId            uint    `json:"user_id"` //The user that this invoice belongs to
+	UserId            uint    `json:"user_id"`
 	Sender_Address    string  `json:"sender_address"`
 	Token_Address     string  `json:"token_address"`
 	Amount            float64 `json:"amount"`

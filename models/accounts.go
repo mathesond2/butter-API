@@ -10,15 +10,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-/*
-JWT claims struct
-*/
 type Token struct {
 	UserId uint
 	jwt.StandardClaims
 }
 
-//a struct to rep user account
 type Account struct {
 	gorm.Model
 	Email    string `json:"email"`
