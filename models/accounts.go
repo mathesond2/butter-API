@@ -20,6 +20,33 @@ type Account struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Token    string `json:"token";sql:"-"`
+	// Addresses []string `json:"addresses"`
+}
+
+type AddressAuth struct {
+	gorm.Model
+	Email     string   `json:"email"`
+	Addresses []string `json:"addresses"`
+}
+
+func (account *Account) ValidateAddress() (map[string]interface{}, bool) {
+	// 		if !strings.HasPrefix(address, "0x") {
+	// 			return u.Message(false, "only valid Ethereum addresses are currently accepted"), false
+	// 		}
+
+	//Email must be unique
+	// temp := &Account{}
+
+	// //check for errors and duplicate emails
+	// err := GetDB().Table("accounts").Where("email = ?", account.Email).First(temp).Error
+	// if err != nil && err != gorm.ErrRecordNotFound {
+	// 	return u.Message(false, "Connection error. Please retry"), false
+	// }
+	// if temp.Email != "" {
+	// 	return u.Message(false, "Email address already in use by another user."), false
+	// }
+
+	return u.Message(false, "Requirement passed"), true
 }
 
 func (account *Account) Validate() (map[string]interface{}, bool) {
@@ -30,6 +57,14 @@ func (account *Account) Validate() (map[string]interface{}, bool) {
 	if len(account.Password) < 6 {
 		return u.Message(false, "Password is required and must be greater than 6 characters"), false
 	}
+
+	// if len(account.Addresses) != 0 {
+	// 	for _, address := range account.Addresses {
+	// 		if !strings.HasPrefix(address, "0x") {
+	// 			return u.Message(false, "only valid Ethereum addresses are currently accepted"), false
+	// 		}
+	// 	}
+	// }
 
 	//Email must be unique
 	temp := &Account{}
