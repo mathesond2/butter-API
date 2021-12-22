@@ -12,13 +12,13 @@ import (
 )
 
 //Webhook endpoint
-var GetTxn = func(w http.ResponseWriter, r *http.Request) {
+var ParseMempoolEvent = func(w http.ResponseWriter, r *http.Request) {
 	txn := &models.Transaction{}
 
 	err := json.NewDecoder(r.Body).Decode(txn)
 	if err != nil {
 		fmt.Println(err)
-		u.Respond(w, u.Message(false, "GetTxn: Error while decoding request body"))
+		u.Respond(w, u.Message(false, "ParseMempoolEvent: Error while decoding request body"))
 		return
 	}
 
