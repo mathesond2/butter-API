@@ -11,7 +11,6 @@ import (
 	"strconv"
 )
 
-//Webhook endpoint
 var ParseMempoolEvent = func(w http.ResponseWriter, r *http.Request) {
 	txn := &models.Transaction{}
 
@@ -60,10 +59,8 @@ var ParseMempoolEvent = func(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		print("read body error: ", err)
+		print("error: ", err)
 	}
-
-	fmt.Println("response Body:", string(body))
 
 	var data map[string]interface{}
 	json.Unmarshal(body, &data)

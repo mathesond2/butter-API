@@ -22,7 +22,6 @@ type Account struct {
 	Token    string `json:"token";sql:"-"`
 }
 
-//Validate incoming user details...
 func (account *Account) Validate() (map[string]interface{}, bool) {
 	if !strings.Contains(account.Email, "@") {
 		return u.Message(false, "Email address is required"), false

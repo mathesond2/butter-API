@@ -34,7 +34,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8000" //localhost
+		port = "8000"
 	}
 
 	fmt.Println(port)
@@ -43,9 +43,4 @@ func main() {
 	if err != nil {
 		fmt.Print(err)
 	}
-
-	// db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 }

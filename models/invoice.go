@@ -110,16 +110,19 @@ func DeleteInvoice(id uint64) *Invoice {
 
 func GetInvoice(id uint64) *Invoice {
 	invoice := &Invoice{}
+
 	err := GetDB().Table("invoices").Where("id = ?", id).First(invoice).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
+
 	return invoice
 }
 
 func GetInvoices(user uint64) []*Invoice {
 	invoices := make([]*Invoice, 0)
+
 	err := GetDB().Table("invoices").Where("user_id = ?", user).Find(&invoices).Error
 	if err != nil {
 		fmt.Println(err)
