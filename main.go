@@ -18,6 +18,7 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
+	router.HandleFunc("/api/walletAddress/new", controllers.AddWallet).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 	router.HandleFunc("/webhooks/mempoolEvent", controllers.ParseMempoolEvent).Methods("POST")
 	router.HandleFunc("/api/associatedTxn", controllers.GetAssociatedTxn).Methods("POST")
