@@ -11,6 +11,7 @@ import (
 	"strconv"
 )
 
+//Webhook endpoint
 var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 	txn := &models.Transaction{}
 
@@ -70,5 +71,22 @@ var GetTxn = func(w http.ResponseWriter, r *http.Request) {
 
 	resp := u.Message(true, "success")
 	resp["data"] = data["data"]
+	u.Respond(w, resp)
+}
+
+var GetAssociatedTxn = func(w http.ResponseWriter, r *http.Request) {
+	latestTxn := &models.ParsedTransaction{}
+
+	err := json.NewDecoder(r.Body).Decode(latestTxn)
+	if err != nil {
+		fmt.Println(err)
+		u.Respond(w, u.Message(false, "GetAssociatedTxn: Error while decoding request body"))
+		return
+	}
+
+	data := models.GetAssociatedTxn(latestTxn)
+
+	resp := u.Message(true, "success")
+	resp["data"] = data
 	u.Respond(w, resp)
 }

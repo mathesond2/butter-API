@@ -70,20 +70,3 @@ var GetInvoices = func(w http.ResponseWriter, r *http.Request) {
 	resp["data"] = data
 	u.Respond(w, resp)
 }
-
-var GetAssociatedTxn = func(w http.ResponseWriter, r *http.Request) {
-	latestTxn := &models.ParsedTransaction{}
-
-	err := json.NewDecoder(r.Body).Decode(latestTxn)
-	if err != nil {
-		fmt.Println(err)
-		u.Respond(w, u.Message(false, "GetAssociatedTxn: Error while decoding request body"))
-		return
-	}
-
-	data := models.GetAssociatedTxn(latestTxn)
-
-	resp := u.Message(true, "success")
-	resp["data"] = data
-	u.Respond(w, resp)
-}
