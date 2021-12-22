@@ -169,3 +169,19 @@ var AddWallet = func(w http.ResponseWriter, r *http.Request) {
 	resp["data"] = addressReqResults
 	u.Respond(w, resp)
 }
+
+var AddWebhook = func(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value("user").(uint)
+	webhook := &models.Webhook{}
+
+	err := json.NewDecoder(r.Body).Decode(webhook)
+	if err != nil {
+		fmt.Println(err)
+		u.Respond(w, u.Message(false, "addWebhook: Error while decoding request body"))
+		return
+	}
+
+	webhook.UserId = user
+	resp := models.CreateWebhook(webhook)
+	u.Respond(w, resp)
+}
