@@ -83,8 +83,11 @@ var GetAssociatedTxn = func(w http.ResponseWriter, r *http.Request) {
 
 	data := models.GetAssociatedTxn(latestTxn)
 
-	// data.UserId
-	GetWebhookByUserId(data.UserId)
+	webhook := GetWebhookByUserId(data.UserId)
+	if webhook.Address != "" {
+		SendDataToWebhook(*webhook, data)
+	}
+
 	resp := u.Message(true, "success")
 	resp["data"] = data
 	u.Respond(w, resp)
@@ -92,20 +95,50 @@ var GetAssociatedTxn = func(w http.ResponseWriter, r *http.Request) {
 
 func GetWebhookByUserId(u uint) *models.Webhook {
 	acc := &models.Webhook{}
-	models.GetDB().Table("webhoooks").Where("user_id = ?", u).First(acc)
-	if acc.UserId <= 0 { // no associated webhook found!
+
+	err := models.GetDB().Table("webhooks").Where("user_id = ?", u).First(acc).Error
+	if err != nil {
+		fmt.Println(err)
 		return nil
 	}
 
+	fmt.Println("webhook: ", acc)
 	return acc
 }
 
-// func GetWebhookByUserId(u uint) *models.Webhook {
-// 	acc := &models.Webhook{}
-// 	models.GetDB().Table("webhoooks").Where("id = ?", u).First(acc)
-// 	if acc.UserId <= 0 { // no associated webhook found!
-// 		return nil
-// 	}
+type WebhookReqBody struct {
+	Name     string          `json:"name"`
+	Networks string          `json:"networks"`
+	Invoice  *models.Invoice `json:"invoice"`
+}
 
-// 	return acc
-// }
+func SendDataToWebhook(w models.Webhook, invoice *models.Invoice) {
+	postBody := WebhookReqBody{
+		w.Name,
+		w.Networks,
+		invoice,
+	}
+
+	jsonData, jsonErr := json.Marshal(postBody)
+	if jsonErr != nil {
+		fmt.Println("error: ", jsonErr)
+	}
+
+	fmt.Println("jsonData: ", string(jsonData))
+	// var resp map[string]interface{}
+
+	httpResp, httpErr := http.Post(
+		w.Endpoint_Url,
+		"application/json; charset=utf-8",
+		bytes.NewBuffer(jsonData),
+	)
+
+	if httpErr != nil {
+		fmt.Println("watch address Error: ", httpErr)
+		// resp = u.Message(true, "failure")
+	}
+
+	defer httpResp.Body.Close()
+	// resp = u.Message(true, "success")
+	// u.Respond(w, resp)
+}
