@@ -5,12 +5,17 @@ import (
 	"go-invoices/app"
 	"go-invoices/controllers"
 	m "go-invoices/models"
+	u "go-invoices/utils"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
+
+var NotFound = func(w http.ResponseWriter, r *http.Request) {
+	u.Respond(w, u.Message(false, "Invalid request: route not found"))
+}
 
 func main() {
 	m.GetDB()
@@ -34,7 +39,7 @@ func main() {
 
 	router.Use(app.JwtAuthentication) //attach JWT auth middleware
 
-	//router.NotFoundHandler = app.NotFoundHandler
+	router.NotFoundHandler = http.HandlerFunc(NotFound)
 
 	port := os.Getenv("PORT")
 	if port == "" {
