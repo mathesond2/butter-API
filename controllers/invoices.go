@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var CreateInvoice = func(w http.ResponseWriter, r *http.Request) {
+func CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint) //Grab the id of the user that send the request
 	invoice := &models.Invoice{}
 
@@ -27,7 +27,7 @@ var CreateInvoice = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-var UpdateInvoice = func(w http.ResponseWriter, r *http.Request) {
+func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
 	vars := mux.Vars(r)
 	id, _ := strconv.ParseUint(vars["id"], 10, 32)
@@ -45,7 +45,7 @@ var UpdateInvoice = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-var DeleteInvoice = func(w http.ResponseWriter, r *http.Request) {
+func DeleteInvoice(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.ParseUint(vars["id"], 10, 32)
 	data := models.DeleteInvoice(id)
@@ -54,7 +54,7 @@ var DeleteInvoice = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-var GetInvoice = func(w http.ResponseWriter, r *http.Request) {
+func GetInvoice(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.ParseUint(vars["id"], 10, 32)
 	data := models.GetInvoice(id)
@@ -63,7 +63,7 @@ var GetInvoice = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-var GetInvoices = func(w http.ResponseWriter, r *http.Request) {
+func GetInvoices(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("user").(uint64)
 	data := models.GetInvoices(id)
 	resp := u.Message(true, "success")

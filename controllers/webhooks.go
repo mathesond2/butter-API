@@ -19,7 +19,7 @@ type PostBody struct {
 	Networks   []string `json:"networks"`
 }
 
-var AddAddressToWatch = func(w http.ResponseWriter, r *http.Request) {
+func AddAddressToWatch(w http.ResponseWriter, r *http.Request) {
 	addressAuth := &models.AddressAuth{}
 
 	err := json.NewDecoder(r.Body).Decode(addressAuth)
@@ -33,8 +33,6 @@ var AddAddressToWatch = func(w http.ResponseWriter, r *http.Request) {
 		u.Respond(w, u.Message(false, "Invalid request: no addresses provided"))
 		return
 	}
-
-	// var resp models.Response
 
 	var addressReqResults = make(map[string]string)
 	//this should be its own validate fn where we also look up any dupes in the db
@@ -92,7 +90,7 @@ var AddAddressToWatch = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-var AddWebhook = func(w http.ResponseWriter, r *http.Request) {
+func AddWebhook(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
 	webhook := &models.PreParsedWebhook{}
 

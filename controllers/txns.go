@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-var ParseMempoolEvent = func(w http.ResponseWriter, r *http.Request) {
+func ParseMempoolEvent(w http.ResponseWriter, r *http.Request) {
 	txn := &models.Transaction{}
 
 	err := json.NewDecoder(r.Body).Decode(txn)
@@ -71,7 +71,7 @@ var ParseMempoolEvent = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-var UpdateInvoiceFromEvent = func(w http.ResponseWriter, r *http.Request) {
+func UpdateInvoiceFromEvent(w http.ResponseWriter, r *http.Request) {
 	latestTxn := &models.ParsedTransaction{}
 
 	err := json.NewDecoder(r.Body).Decode(latestTxn)
