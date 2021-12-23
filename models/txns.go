@@ -28,7 +28,7 @@ type ParsedTransaction struct {
 	Direction      string  `json:"direction"`
 }
 
-func GetAssociatedTxn(txn *ParsedTransaction) *Invoice {
+func UpdateInvoiceFromEvent(txn *ParsedTransaction) *Invoice {
 	invoice := &Invoice{}
 
 	err := GetDB().Table("invoices").Where(&Invoice{
@@ -37,7 +37,7 @@ func GetAssociatedTxn(txn *ParsedTransaction) *Invoice {
 		Amount:            txn.Value,
 	}).First(&invoice).Error
 	if err != nil {
-		fmt.Println(err, "GetAssociatedTxn")
+		fmt.Println(err, "UpdateInvoiceFromEvent")
 		return nil
 	}
 

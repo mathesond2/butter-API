@@ -20,10 +20,10 @@ func main() {
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 
-	router.HandleFunc("/api/webhooks/wallet/add", controllers.AddWallet).Methods("POST")
 	router.HandleFunc("/api/webhooks/add", controllers.AddWebhook).Methods("POST")
-	router.HandleFunc("/webhooks/mempoolEvent", controllers.ParseMempoolEvent).Methods("POST")
-	router.HandleFunc("/api/webhooks/associatedTxn", controllers.GetAssociatedTxn).Methods("POST")
+	router.HandleFunc("/api/webhooks/address/add", controllers.AddAddressToWatch).Methods("POST")
+	router.HandleFunc("/api/webhooks/mempoolEvent", controllers.ParseMempoolEvent).Methods("POST")
+	router.HandleFunc("/api/webhooks/updateInvoice", controllers.UpdateInvoiceFromEvent).Methods("POST") //prob should be put
 
 	router.HandleFunc("/api/invoice/new", controllers.CreateInvoice).Methods("POST")
 	router.HandleFunc("/api/{id}/invoice", controllers.UpdateInvoice).Methods("PUT")

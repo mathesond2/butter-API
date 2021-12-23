@@ -19,7 +19,7 @@ type PostBody struct {
 	Networks   []string `json:"networks"`
 }
 
-var AddWallet = func(w http.ResponseWriter, r *http.Request) {
+var AddAddressToWatch = func(w http.ResponseWriter, r *http.Request) {
 	addressAuth := &models.AddressAuth{}
 
 	err := json.NewDecoder(r.Body).Decode(addressAuth)
@@ -116,4 +116,48 @@ var AddWebhook = func(w http.ResponseWriter, r *http.Request) {
 
 	resp := models.CreateWebhook(parsedWebhook)
 	u.Respond(w, resp)
+}
+
+func GetWebhookByUserId(u uint) *models.Webhook {
+	acc := &models.Webhook{}
+
+	err := models.GetDB().Table("webhooks").Where("user_id = ?", u).First(acc).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	fmt.Println("webhook: ", acc)
+	return acc
+}
+
+type WebhookReqBody struct {
+	Name     string          `json:"name"`
+	Networks string          `json:"networks"`
+	Invoice  *models.Invoice `json:"invoice"`
+}
+
+func SendDataToWebhook(w models.Webhook, invoice *models.Invoice) {
+	postBody := WebhookReqBody{
+		w.Name,
+		w.Networks,
+		invoice,
+	}
+
+	jsonData, jsonErr := json.Marshal(postBody)
+	if jsonErr != nil {
+		fmt.Println("error: ", jsonErr)
+	}
+
+	httpResp, httpErr := http.Post(
+		w.Endpoint_Url,
+		"application/json; charset=utf-8",
+		bytes.NewBuffer(jsonData),
+	)
+
+	if httpErr != nil {
+		fmt.Println("watch address Error: ", httpErr)
+	}
+
+	defer httpResp.Body.Close()
 }

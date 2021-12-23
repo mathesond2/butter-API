@@ -39,19 +39,19 @@ var ParseMempoolEvent = func(w http.ResponseWriter, r *http.Request) {
 	bytesData, _ := json.Marshal(params)
 	reader := bytes.NewReader(bytesData)
 
-	request, error := http.NewRequest(
+	updateInvoiceReq, error := http.NewRequest(
 		http.MethodPost,
-		"http://stormy-cove-04196.herokuapp.com/api/webhooks/associatedTxn",
-		// "http://localhost:8000/api/webhooks/associatedTxn",
+		"http://stormy-cove-04196.herokuapp.com/api/webhooks/updateInvoice",
+		// "http://localhost:8000/api/webhooks/updateInvoice",
 		reader,
 	)
-	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
+	updateInvoiceReq.Header.Set("Content-Type", "application/json;charset=UTF-8")
 	if error != nil {
 		fmt.Println("Error is req: ", error)
 	}
 
 	client := &http.Client{}
-	response, error := client.Do(request)
+	response, error := client.Do(updateInvoiceReq)
 	if error != nil {
 		panic(error)
 	}
@@ -71,17 +71,17 @@ var ParseMempoolEvent = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-var GetAssociatedTxn = func(w http.ResponseWriter, r *http.Request) {
+var UpdateInvoiceFromEvent = func(w http.ResponseWriter, r *http.Request) {
 	latestTxn := &models.ParsedTransaction{}
 
 	err := json.NewDecoder(r.Body).Decode(latestTxn)
 	if err != nil {
 		fmt.Println(err)
-		u.Respond(w, u.Message(false, "GetAssociatedTxn: Error while decoding request body"))
+		u.Respond(w, u.Message(false, "UpdateInvoiceFromEvent: Error while decoding request body"))
 		return
 	}
 
-	data := models.GetAssociatedTxn(latestTxn)
+	data := models.UpdateInvoiceFromEvent(latestTxn)
 
 	webhook := GetWebhookByUserId(data.UserId)
 	if webhook.Address != "" {
@@ -91,54 +91,4 @@ var GetAssociatedTxn = func(w http.ResponseWriter, r *http.Request) {
 	resp := u.Message(true, "success")
 	resp["data"] = data
 	u.Respond(w, resp)
-}
-
-func GetWebhookByUserId(u uint) *models.Webhook {
-	acc := &models.Webhook{}
-
-	err := models.GetDB().Table("webhooks").Where("user_id = ?", u).First(acc).Error
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-
-	fmt.Println("webhook: ", acc)
-	return acc
-}
-
-type WebhookReqBody struct {
-	Name     string          `json:"name"`
-	Networks string          `json:"networks"`
-	Invoice  *models.Invoice `json:"invoice"`
-}
-
-func SendDataToWebhook(w models.Webhook, invoice *models.Invoice) {
-	postBody := WebhookReqBody{
-		w.Name,
-		w.Networks,
-		invoice,
-	}
-
-	jsonData, jsonErr := json.Marshal(postBody)
-	if jsonErr != nil {
-		fmt.Println("error: ", jsonErr)
-	}
-
-	fmt.Println("jsonData: ", string(jsonData))
-	// var resp map[string]interface{}
-
-	httpResp, httpErr := http.Post(
-		w.Endpoint_Url,
-		"application/json; charset=utf-8",
-		bytes.NewBuffer(jsonData),
-	)
-
-	if httpErr != nil {
-		fmt.Println("watch address Error: ", httpErr)
-		// resp = u.Message(true, "failure")
-	}
-
-	defer httpResp.Body.Close()
-	// resp = u.Message(true, "success")
-	// u.Respond(w, resp)
 }
