@@ -20,39 +20,39 @@ type Invoice struct {
 	Status            string  `json:"status"`
 }
 
-func (invoice *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
-	if invoice.Sender_Address == "" {
+func (i *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
+	if i.Sender_Address == "" {
 		return u.Message(false, "sender address should be on the payload"), false
 	}
 
-	if invoice.Token_Address == "" {
+	if i.Token_Address == "" {
 		return u.Message(false, "token address should be on the payload"), false
 	}
 
-	if invoice.Amount <= 0 {
+	if i.Amount <= 0 {
 		return u.Message(false, "amount should be on the payload"), false
 	}
 
-	if invoice.Recipient_Address == "" {
+	if i.Recipient_Address == "" {
 		return u.Message(false, "recipient address should be on the payload"), false
 	}
 
-	if invoice.UserId <= 0 {
+	if i.UserId <= 0 {
 		return u.Message(false, "User is not recognized"), false
 	}
 
 	return u.Message(true, "success"), true
 }
 
-func (invoice *Invoice) CreateInvoice() map[string]interface{} {
-	if resp, ok := invoice.ValidateInvoice(); !ok {
+func (i *Invoice) CreateInvoice() map[string]interface{} {
+	if resp, ok := i.ValidateInvoice(); !ok {
 		return resp
 	}
 
-	GetDB().Create(invoice)
+	GetDB().Create(i)
 
 	resp := u.Message(true, "success")
-	resp["invoice"] = invoice
+	resp["invoice"] = i
 	return resp
 }
 
@@ -109,15 +109,15 @@ func DeleteInvoice(id uint64) *Invoice {
 }
 
 func GetInvoice(id uint64) *Invoice {
-	invoice := &Invoice{}
+	i := &Invoice{}
 
-	err := GetDB().Table("invoices").Where("id = ?", id).First(invoice).Error
+	err := GetDB().Table("invoices").Where("id = ?", id).First(i).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
 
-	return invoice
+	return i
 }
 
 func GetInvoices(user uint64) []*Invoice {
