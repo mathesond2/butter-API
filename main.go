@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"go-invoices/app"
-	"go-invoices/controllers"
+	c "go-invoices/controllers"
 	m "go-invoices/models"
 	u "go-invoices/utils"
 	"net/http"
@@ -14,32 +14,33 @@ import (
 )
 
 var NotFound = func(w http.ResponseWriter, r *http.Request) {
-	u.Respond(w, u.Message(false, "Invalid request: route not found"))
+	w.WriteHeader(http.StatusNotFound)
+	u.Respond(w, u.Message(false, "This resources was not found on our server"))
 }
 
 func main() {
 	m.GetDB()
 
-	router := mux.NewRouter()
+	r := mux.NewRouter()
 
-	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
-	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
+	r.HandleFunc("/api/user/new", c.CreateAccount).Methods("POST")
+	r.HandleFunc("/api/user/login", c.Authenticate).Methods("POST")
 
-	router.HandleFunc("/api/webhooks/add", controllers.AddWebhook).Methods("POST")
-	router.HandleFunc("/api/webhooks/address/add", controllers.AddAddressToWatch).Methods("POST")
-	router.HandleFunc("/api/webhooks/mempoolEvent", controllers.ParseMempoolEvent).Methods("POST")
-	router.HandleFunc("/api/webhooks/updateInvoice", controllers.UpdateInvoiceFromEvent).Methods("POST") //prob should be put
+	r.HandleFunc("/api/webhooks/add", c.AddWebhook).Methods("POST")
+	r.HandleFunc("/api/webhooks/address/add", c.AddAddressToWatch).Methods("POST")
+	r.HandleFunc("/api/webhooks/mempoolEvent", c.ParseMempoolEvent).Methods("POST")
+	r.HandleFunc("/api/webhooks/updateInvoice", c.UpdateInvoiceFromEvent).Methods("POST") //prob should be put
 
-	router.HandleFunc("/api/invoice/new", controllers.CreateInvoice).Methods("POST")
-	router.HandleFunc("/api/{id}/invoice", controllers.UpdateInvoice).Methods("PUT")
-	router.HandleFunc("/api/{id}/invoice", controllers.DeleteInvoice).Methods("DELETE")
-	router.HandleFunc("/api/{id}/invoice", controllers.GetInvoice).Methods("GET")
+	r.HandleFunc("/api/invoice/new", c.CreateInvoice).Methods("POST")
+	r.HandleFunc("/api/{id}/invoice", c.UpdateInvoice).Methods("PUT")
+	r.HandleFunc("/api/{id}/invoice", c.DeleteInvoice).Methods("DELETE")
+	r.HandleFunc("/api/{id}/invoice", c.GetInvoice).Methods("GET")
 
-	router.HandleFunc("/api/me/invoices", controllers.GetInvoices).Methods("GET")
+	r.HandleFunc("/api/me/invoices", c.GetInvoices).Methods("GET")
 
-	router.Use(app.JwtAuthentication) //attach JWT auth middleware
+	r.Use(app.JwtAuthentication)
 
-	router.NotFoundHandler = http.HandlerFunc(NotFound)
+	r.NotFoundHandler = http.HandlerFunc(NotFound)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -48,7 +49,7 @@ func main() {
 
 	fmt.Println(port)
 
-	err := http.ListenAndServe(":"+port, router)
+	err := http.ListenAndServe(":"+port, r)
 	if err != nil {
 		fmt.Print(err)
 	}
