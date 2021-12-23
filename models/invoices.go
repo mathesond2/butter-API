@@ -41,6 +41,10 @@ func (i *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
 		return u.Message(false, "User is not recognized"), false
 	}
 
+	if i.Status == "" {
+		return u.Message(false, "invoice status should be on the payload"), false
+	}
+
 	return u.Message(true, "success"), true
 }
 
@@ -94,17 +98,16 @@ func DeleteInvoice(id uint64) *Invoice {
 	invoiceBeforeDeletion := &Invoice{}
 	err := GetDB().Table("invoices").Where("id = ?", id).First(invoiceBeforeDeletion).Error
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("DeleteInvoice find error: ", err)
 		return nil
 	}
 
 	deleteErr := GetDB().Table("invoices").Where("id = ?", id).Delete(invoice).Error
 	if deleteErr != nil {
-		fmt.Println(deleteErr)
+		fmt.Println("DeleteInvoice delete error: ", deleteErr)
 		return nil
 	}
-	//todo: fix this..returning null
-	invoiceBeforeDeletion.DeletedAt = invoice.DeletedAt
+
 	return invoiceBeforeDeletion
 }
 
