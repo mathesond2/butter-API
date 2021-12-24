@@ -30,7 +30,6 @@ func AddAddress(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//we should also look for any dupes in the db
 	if !strings.HasPrefix(address.Address, "0x") {
 		u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
 		return
