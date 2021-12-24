@@ -19,6 +19,7 @@ type PostBody struct {
 	Networks   []string `json:"networks"`
 }
 
+//this allows us to add an address to the mempool watch list
 func AddAddressToWatch(w http.ResponseWriter, r *http.Request) {
 	addressAuth := &models.AddressAuth{}
 
@@ -34,14 +35,15 @@ func AddAddressToWatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var addressReqResults = make(map[string]string)
-	//this should be its own validate fn where we also look up any dupes in the db
+	//we should also look for any dupes in the db
 	for _, address := range addressAuth.Addresses {
 		if !strings.HasPrefix(address, "0x") {
 			u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
 			return
 		}
 	}
+
+	var addressReqResults = make(map[string]string)
 
 	for _, address := range addressAuth.Addresses {
 		supportedNetworks := []string{

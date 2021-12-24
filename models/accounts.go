@@ -25,7 +25,6 @@ type Account struct {
 
 type AddressAuth struct {
 	gorm.Model
-	Email     string   `json:"email"`
 	Addresses []string `json:"addresses"`
 }
 

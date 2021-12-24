@@ -56,7 +56,7 @@ func CreateWebhook(w *PreParsedWebhook) map[string]interface{} {
 
 	parsedWebhook := &Webhook{
 		Address:      w.Address,
-		Networks:     hackyArrToStr,
+		Networks:     hackyArrToStr, //workaround for postgres not allowing slices ('networks' length will never be fixed amount)
 		Name:         w.Name,
 		Endpoint_Url: w.Endpoint_Url,
 		UserId:       w.UserId,
