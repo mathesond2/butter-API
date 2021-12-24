@@ -23,11 +23,6 @@ type Account struct {
 	// Addresses []string `json:"addresses"`
 }
 
-type AddressAuth struct {
-	gorm.Model
-	Addresses []string `json:"addresses"`
-}
-
 func (account *Account) ValidateAddress() (map[string]interface{}, bool) {
 	// 		if !strings.HasPrefix(address, "0x") {
 	// 			return u.Message(false, "only valid Ethereum addresses are currently accepted"), false

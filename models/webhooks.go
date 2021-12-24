@@ -23,6 +23,17 @@ type Webhook struct {
 	UserId       uint   `json:"user_id"`
 }
 
+type Address struct {
+	gorm.Model
+	Address string `json:"address"`
+	UserId  uint   `json:"user_id"`
+}
+
+type AddressAuth struct {
+	gorm.Model
+	Addresses []string `json:"addresses"`
+}
+
 func (w *PreParsedWebhook) ValidateWebhook() (map[string]interface{}, bool) {
 	if w.Address == "" {
 		return u.Message(false, "address should be on the payload"), false
@@ -66,5 +77,12 @@ func CreateWebhook(w *PreParsedWebhook) map[string]interface{} {
 
 	resp := u.Message(true, "success")
 	resp["data"] = w
+	return resp
+}
+
+func CreateAddress(a *Address) map[string]interface{} {
+	GetDB().Create(a)
+	resp := u.Message(true, "success")
+	resp["data"] = a
 	return resp
 }

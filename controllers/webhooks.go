@@ -19,6 +19,29 @@ type PostBody struct {
 	Networks   []string `json:"networks"`
 }
 
+func AddAddress(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value("user").(uint)
+	address := &models.Address{}
+
+	err := json.NewDecoder(r.Body).Decode(address)
+	if err != nil {
+		fmt.Println(err)
+		u.Respond(w, u.Message(false, "addAddress: Error while decoding request body"))
+		return
+	}
+
+	//we should also look for any dupes in the db
+	if !strings.HasPrefix(address.Address, "0x") {
+		u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
+		return
+	}
+
+	address.UserId = user
+
+	resp := models.CreateAddress(address)
+	u.Respond(w, resp)
+}
+
 //this allows us to add an address to the mempool watch list
 func AddAddressToWatch(w http.ResponseWriter, r *http.Request) {
 	addressAuth := &models.AddressAuth{}

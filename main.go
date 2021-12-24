@@ -27,7 +27,7 @@ func main() {
 	r.HandleFunc("/api/user/login", c.Authenticate).Methods("POST")
 
 	r.HandleFunc("/api/webhooks", c.AddWebhook).Methods("POST")
-	// r.HandleFunc("/api/webhooks/address", c.AddAddress).Methods("POST")
+	r.HandleFunc("/api/webhooks/address", c.AddAddress).Methods("POST")
 	r.HandleFunc("/api/webhooks/address/watch", c.AddAddressToWatch).Methods("POST")
 	r.HandleFunc("/api/webhooks/mempoolEvent", c.ParseMempoolEvent).Methods("POST")
 	r.HandleFunc("/api/webhooks/updateInvoice", c.UpdateInvoiceFromEvent).Methods("POST") //prob should be put
