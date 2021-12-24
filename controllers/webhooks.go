@@ -42,8 +42,19 @@ func AddAddress(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
+func AddressIsRegistered(address string, u uint) bool {
+	resp := models.FindAddress(address, u)
+	fmt.Println("address: ", resp["data"])
+	if resp["data"] == nil {
+		return false
+	} else {
+		return true
+	}
+}
+
 //this allows us to add an address to the mempool watch list
 func AddAddressToWatch(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value("user").(uint)
 	addressAuth := &models.AddressAuth{}
 
 	err := json.NewDecoder(r.Body).Decode(addressAuth)
@@ -62,6 +73,12 @@ func AddAddressToWatch(w http.ResponseWriter, r *http.Request) {
 	for _, address := range addressAuth.Addresses {
 		if !strings.HasPrefix(address, "0x") {
 			u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
+			return
+		}
+
+		if !AddressIsRegistered(address, user) {
+			msg := fmt.Sprintf("address %s is not registered with your account.", address)
+			u.Respond(w, u.Message(false, msg))
 			return
 		}
 	}

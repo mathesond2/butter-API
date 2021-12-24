@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	u "go-invoices/utils"
 	"strings"
 
@@ -84,5 +85,22 @@ func CreateAddress(a *Address) map[string]interface{} {
 	GetDB().Create(a)
 	resp := u.Message(true, "success")
 	resp["data"] = a
+	return resp
+}
+
+func FindAddress(a string, user uint) map[string]interface{} {
+	address := &Address{}
+
+	err := GetDB().Table("addresses").Where(&Address{
+		Address: a,
+		UserId:  user,
+	}).First(&address).Error
+	if err != nil {
+		fmt.Println(err, "UpdateInvoiceFromEvent")
+		return nil
+	}
+
+	resp := u.Message(true, "success")
+	resp["data"] = address.Address
 	return resp
 }
