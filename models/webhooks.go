@@ -2,6 +2,7 @@ package models
 
 import (
 	u "go-invoices/utils"
+	"strings"
 
 	"github.com/jinzhu/gorm"
 )
@@ -22,13 +23,13 @@ type Webhook struct {
 	UserId       uint   `json:"user_id"`
 }
 
-func (w *Webhook) ValidateWebhook() (map[string]interface{}, bool) {
+func (w *PreParsedWebhook) ValidateWebhook() (map[string]interface{}, bool) {
 	if w.Address == "" {
 		return u.Message(false, "address should be on the payload"), false
 	}
 
-	if w.Networks == "" {
-		return u.Message(false, "chosen networks should be on the payload"), false
+	if len(w.Networks) == 0 {
+		return u.Message(false, "at least one chosen network should be on the payload"), false
 	}
 
 	if w.Name == "" {
@@ -46,12 +47,22 @@ func (w *Webhook) ValidateWebhook() (map[string]interface{}, bool) {
 	return u.Message(true, "success"), true
 }
 
-func CreateWebhook(w *Webhook) map[string]interface{} {
+func CreateWebhook(w *PreParsedWebhook) map[string]interface{} {
 	if resp, ok := w.ValidateWebhook(); !ok {
 		return resp
 	}
 
-	GetDB().Create(w)
+	hackyArrToStr := strings.Join(w.Networks, " ")
+
+	parsedWebhook := &Webhook{
+		Address:      w.Address,
+		Networks:     hackyArrToStr,
+		Name:         w.Name,
+		Endpoint_Url: w.Endpoint_Url,
+		UserId:       w.UserId,
+	}
+
+	GetDB().Create(parsedWebhook)
 
 	resp := u.Message(true, "success")
 	resp["data"] = w

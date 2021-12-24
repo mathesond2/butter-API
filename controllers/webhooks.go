@@ -102,17 +102,8 @@ func AddWebhook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	webhook.UserId = user
-	hackyArrToStr := strings.Join(webhook.Networks, " ")
 
-	parsedWebhook := &models.Webhook{
-		Address:      webhook.Address,
-		Networks:     hackyArrToStr,
-		Name:         webhook.Name,
-		Endpoint_Url: webhook.Endpoint_Url,
-		UserId:       user,
-	}
-
-	resp := models.CreateWebhook(parsedWebhook)
+	resp := models.CreateWebhook(webhook)
 	u.Respond(w, resp)
 }
 
