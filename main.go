@@ -23,20 +23,20 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/api/user/new", c.CreateAccount).Methods("POST")
+	r.HandleFunc("/api/user", c.CreateAccount).Methods("POST")
 	r.HandleFunc("/api/user/login", c.Authenticate).Methods("POST")
 
-	r.HandleFunc("/api/webhooks/add", c.AddWebhook).Methods("POST")
-	r.HandleFunc("/api/webhooks/address/add", c.AddAddressToWatch).Methods("POST")
+	r.HandleFunc("/api/webhooks", c.AddWebhook).Methods("POST")
+	r.HandleFunc("/api/webhooks/address", c.AddAddressToWatch).Methods("POST")
 	r.HandleFunc("/api/webhooks/mempoolEvent", c.ParseMempoolEvent).Methods("POST")
 	r.HandleFunc("/api/webhooks/updateInvoice", c.UpdateInvoiceFromEvent).Methods("POST") //prob should be put
 
-	r.HandleFunc("/api/invoice/new", c.CreateInvoice).Methods("POST")
+	r.HandleFunc("/api/invoice", c.CreateInvoice).Methods("POST")
 	r.HandleFunc("/api/{id}/invoice", c.UpdateInvoice).Methods("PUT")
 	r.HandleFunc("/api/{id}/invoice", c.DeleteInvoice).Methods("DELETE")
 	r.HandleFunc("/api/{id}/invoice", c.GetInvoice).Methods("GET")
 
-	r.HandleFunc("/api/me/invoices", c.GetInvoices).Methods("GET")
+	r.HandleFunc("/api/invoices", c.GetInvoices).Methods("GET")
 
 	r.Use(app.JwtAuthentication)
 
