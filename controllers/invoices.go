@@ -21,6 +21,28 @@ func hasRegisteredAddress(a1 string, a2 string, user uint) bool {
 	}
 }
 
+func PassesAddressChecks(invoice *models.Invoice, user uint) (bool, string) {
+	if len(invoice.Recipient_Address) == 0 || len(invoice.Sender_Address) == 0 {
+		return false, "both sender and recipient addresses must be on the payload"
+	}
+
+	if !u.IsValidEthAddress(invoice.Recipient_Address) || !u.IsValidEthAddress(invoice.Sender_Address) {
+		return false, "only valid Ethereum addresses are currently accepted"
+	}
+
+	isRegistered := hasRegisteredAddress(
+		invoice.Recipient_Address,
+		invoice.Sender_Address,
+		user,
+	)
+
+	if !isRegistered {
+		return false, "At least one of the addresses provided must be registered with your account"
+	}
+
+	return true, ""
+}
+
 func CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
 	invoice := &models.Invoice{}
@@ -33,19 +55,9 @@ func CreateInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !u.IsValidEthAddress(invoice.Recipient_Address) || !u.IsValidEthAddress(invoice.Sender_Address) {
-		u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
-		return
-	}
-
-	isRegistered := hasRegisteredAddress(
-		invoice.Recipient_Address,
-		invoice.Sender_Address,
-		user,
-	)
-
-	if !isRegistered {
-		u.Respond(w, u.Message(false, "At least one of the addresses provided must be registered with your account"))
+	ok, msg := PassesAddressChecks(invoice, user)
+	if !ok {
+		u.Respond(w, u.Message(false, msg))
 		return
 	}
 
@@ -61,6 +73,7 @@ func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.ParseUint(vars["id"], 10, 32)
 
 	invoice := &models.Invoice{}
+	invoice.UserId = user
 
 	err := json.NewDecoder(r.Body).Decode(invoice)
 	if err != nil {
@@ -68,7 +81,6 @@ func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	invoice.UserId = user
 	resp := models.UpdateInvoice(id, invoice)
 	u.Respond(w, resp)
 }
