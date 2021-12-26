@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	u "go-invoices/utils"
 	"strings"
 
@@ -96,7 +95,6 @@ func FindAddress(a string, user uint) map[string]interface{} {
 		UserId:  user,
 	}).First(&address).Error
 	if err != nil {
-		fmt.Println(err, "UpdateInvoiceFromEvent")
 		return nil
 	}
 

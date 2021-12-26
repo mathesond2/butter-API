@@ -30,7 +30,7 @@ func main() {
 
 	//these 2 could be one endpoint: once an address is added, it should be watched
 	r.HandleFunc("/api/webhooks/address", c.AddAddress).Methods("POST")
-	r.HandleFunc("/api/webhooks/address/watch", c.AddAddressToWatch).Methods("POST")
+	// r.HandleFunc("/api/webhooks/address/watch", c.AddAddressToWatch).Methods("POST")
 	//we should have an api to remove an address from db and from watch list
 
 	//Private
