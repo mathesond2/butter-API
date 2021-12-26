@@ -28,7 +28,7 @@ func AddressIsRegistered(address string, u uint) bool {
 	}
 }
 
-//this allows us to add an address to the mempool watch list
+//add an address to the mempool watch list
 func WatchAddress(address string) string {
 	supportedNetworks := []string{
 		"main",
@@ -102,6 +102,40 @@ func AddAddress(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := models.CreateAddress(address)
+	u.Respond(w, resp)
+}
+
+//delete address to the mempool watch list and then delete from db
+func DeleteAddress(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value("user").(uint)
+	address := &models.Address{}
+	address.UserId = user
+
+	err := json.NewDecoder(r.Body).Decode(address)
+	if err != nil {
+		fmt.Println(err)
+		u.Respond(w, u.Message(false, "addAddress: Error while decoding request body"))
+		return
+	}
+
+	if !strings.HasPrefix(address.Address, "0x") {
+		u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
+		return
+	}
+
+	if !AddressIsRegistered(address.Address, user) {
+		msg := fmt.Sprintf("address %s is not registered with your account.", address.Address)
+		u.Respond(w, u.Message(false, msg))
+		return
+	}
+
+	// unwatchAddressRes := UnwatchAddress(address.Address)
+	// if unwatchAddressRes != "success" {
+	// 	u.Respond(w, u.Message(false, unwatchAddressRes))
+	// 	return
+	// }
+
+	resp := models.DeleteAddress(address)
 	u.Respond(w, resp)
 }
 

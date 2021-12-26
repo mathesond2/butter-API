@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	u "go-invoices/utils"
 	"strings"
 
@@ -84,6 +85,24 @@ func CreateAddress(a *Address) map[string]interface{} {
 	GetDB().Create(a)
 	resp := u.Message(true, "success")
 	resp["data"] = a
+	return resp
+}
+
+func DeleteAddress(a *Address) map[string]interface{} {
+	addy := &Address{}
+
+	deleteErr := GetDB().Table("addresses").Where(&Address{
+		Address: a.Address,
+		UserId:  a.UserId,
+	}).Delete(&addy).Error
+	if deleteErr != nil {
+		fmt.Println("DeleteInvoice delete error: ", deleteErr)
+		return nil
+	}
+
+	resp := u.Message(true, "success")
+	msg := fmt.Sprintf("address %s has been deleted.", a.Address)
+	resp["data"] = msg
 	return resp
 }
 

@@ -28,7 +28,7 @@ func main() {
 
 	r.HandleFunc("/api/webhooks", c.AddWebhook).Methods("POST")
 	r.HandleFunc("/api/webhooks/address", c.AddAddress).Methods("POST")
-	//we should have an api to remove an address from db and from watch list
+	r.HandleFunc("/api/webhooks/address", c.DeleteAddress).Methods("DELETE")
 
 	//Private
 	r.HandleFunc("/api/webhooks/mempoolEvent", c.ParseMempoolEvent).Methods("POST")
