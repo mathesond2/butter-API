@@ -28,19 +28,21 @@ type ParsedTransaction struct {
 	Direction      string  `json:"direction"`
 }
 
-func UpdateInvoiceFromEvent(txn *ParsedTransaction) *Invoice {
+func UpdateInvoiceStatusFromEvent(txn *ParsedTransaction) *Invoice {
 	invoice := &Invoice{}
 
+	//TODO: check invoice status for "in progress"
 	err := GetDB().Table("invoices").Where(&Invoice{
 		Sender_Address:    txn.WatchedAddress,
 		Recipient_Address: txn.To,
 		Amount:            txn.Value,
 	}).First(&invoice).Error
 	if err != nil {
-		fmt.Println(err, "UpdateInvoiceFromEvent")
+		fmt.Println(err, "UpdateInvoiceStatusFromEvent")
 		return nil
 	}
 
+	// TODO: this could just be `invoice.Status = txn.Status`
 	var status string
 	if txn.Status == "confirmed" {
 		status = "confirmed"

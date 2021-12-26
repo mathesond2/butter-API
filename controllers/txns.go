@@ -41,8 +41,8 @@ func ParseMempoolEvent(w http.ResponseWriter, r *http.Request) {
 
 	updateInvoiceReq, error := http.NewRequest(
 		http.MethodPost,
-		"http://stormy-cove-04196.herokuapp.com/api/webhooks/updateInvoice",
-		// "http://localhost:8000/api/webhooks/updateInvoice",
+		"http://stormy-cove-04196.herokuapp.com/api/webhooks/UpdateInvoiceStatusFromEvent",
+		// "http://localhost:8000/api/webhooks/UpdateInvoiceStatusFromEvent",
 		reader,
 	)
 	updateInvoiceReq.Header.Set("Content-Type", "application/json;charset=UTF-8")
@@ -71,18 +71,19 @@ func ParseMempoolEvent(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-func UpdateInvoiceFromEvent(w http.ResponseWriter, r *http.Request) {
+func UpdateInvoiceStatusFromEvent(w http.ResponseWriter, r *http.Request) {
 	latestTxn := &models.ParsedTransaction{}
 
 	err := json.NewDecoder(r.Body).Decode(latestTxn)
 	if err != nil {
 		fmt.Println(err)
-		u.Respond(w, u.Message(false, "UpdateInvoiceFromEvent: Error while decoding request body"))
+		u.Respond(w, u.Message(false, "UpdateInvoiceStatusFromEvent: Error while decoding request body"))
 		return
 	}
 
-	data := models.UpdateInvoiceFromEvent(latestTxn)
+	data := models.UpdateInvoiceStatusFromEvent(latestTxn)
 
+	//send update to any user-registered webhooks
 	webhook := GetWebhookByUserId(data.UserId)
 	if webhook.Address != "" {
 		SendDataToWebhook(*webhook, data)

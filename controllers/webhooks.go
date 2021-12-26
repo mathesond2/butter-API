@@ -22,6 +22,7 @@ type PostBody struct {
 func AddAddress(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
 	address := &models.Address{}
+	address.UserId = user
 
 	err := json.NewDecoder(r.Body).Decode(address)
 	if err != nil {
@@ -34,8 +35,6 @@ func AddAddress(w http.ResponseWriter, r *http.Request) {
 		u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
 		return
 	}
-
-	address.UserId = user
 
 	resp := models.CreateAddress(address)
 	u.Respond(w, resp)
@@ -149,16 +148,15 @@ func AddWebhook(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetWebhookByUserId(u uint) *models.Webhook {
-	acc := &models.Webhook{}
+	w := &models.Webhook{}
 
-	err := models.GetDB().Table("webhooks").Where("user_id = ?", u).First(acc).Error
+	err := models.GetDB().Table("webhooks").Where("user_id = ?", u).First(w).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
 
-	fmt.Println("webhook: ", acc)
-	return acc
+	return w
 }
 
 type WebhookReqBody struct {

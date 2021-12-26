@@ -53,6 +53,8 @@ func (i *Invoice) CreateInvoice() map[string]interface{} {
 		return resp
 	}
 
+	//add check here for if reqInvoice.reciptient_address/ sender_address is registered with the user
+
 	GetDB().Create(i)
 
 	resp := u.Message(true, "success")
@@ -64,6 +66,8 @@ func UpdateInvoice(id uint64, reqinvoice *Invoice) map[string]interface{} {
 	if resp, ok := reqinvoice.ValidateInvoice(); !ok {
 		return resp
 	}
+
+	//add check here for if reqInvoice.reciptient_address/ sender_address is registered with the user
 
 	invoice := &Invoice{}
 	err := GetDB().Table("invoices").Where("id = ?", id).First(invoice).Error

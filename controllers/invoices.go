@@ -12,7 +12,7 @@ import (
 )
 
 func CreateInvoice(w http.ResponseWriter, r *http.Request) {
-	user := r.Context().Value("user").(uint) //Grab the id of the user that send the request
+	user := r.Context().Value("user").(uint)
 	invoice := &models.Invoice{}
 
 	err := json.NewDecoder(r.Body).Decode(invoice)
@@ -28,6 +28,8 @@ func CreateInvoice(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
+	//should check if user is the owner of the invoice (user id)
+
 	user := r.Context().Value("user").(uint)
 	vars := mux.Vars(r)
 	id, _ := strconv.ParseUint(vars["id"], 10, 32)
@@ -46,6 +48,8 @@ func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteInvoice(w http.ResponseWriter, r *http.Request) {
+	//should check if user is the owner of the invoice (user id)
+
 	vars := mux.Vars(r)
 	id, _ := strconv.ParseUint(vars["id"], 10, 32)
 	data := models.DeleteInvoice(id)

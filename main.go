@@ -27,15 +27,20 @@ func main() {
 	r.HandleFunc("/api/user/login", c.Authenticate).Methods("POST")
 
 	r.HandleFunc("/api/webhooks", c.AddWebhook).Methods("POST")
+
+	//these 2 could be one endpoint: once an address is added, it should be watched
 	r.HandleFunc("/api/webhooks/address", c.AddAddress).Methods("POST")
 	r.HandleFunc("/api/webhooks/address/watch", c.AddAddressToWatch).Methods("POST")
+	//we should have an api to remove an address from db and from watch list
+
+	//Private
 	r.HandleFunc("/api/webhooks/mempoolEvent", c.ParseMempoolEvent).Methods("POST")
-	r.HandleFunc("/api/webhooks/updateInvoice", c.UpdateInvoiceFromEvent).Methods("POST") //prob should be put
+	r.HandleFunc("/api/webhooks/UpdateInvoiceStatusFromEvent", c.UpdateInvoiceStatusFromEvent).Methods("POST") //prob should be put
 
 	r.HandleFunc("/api/invoice", c.CreateInvoice).Methods("POST")
-	r.HandleFunc("/api/{id}/invoice", c.UpdateInvoice).Methods("PUT")
-	r.HandleFunc("/api/{id}/invoice", c.DeleteInvoice).Methods("DELETE")
-	r.HandleFunc("/api/{id}/invoice", c.GetInvoice).Methods("GET")
+	r.HandleFunc("/api/invoice/{id}", c.UpdateInvoice).Methods("PUT")
+	r.HandleFunc("/api/invoice/{id}", c.DeleteInvoice).Methods("DELETE")
+	r.HandleFunc("/api/invoice/{id}", c.GetInvoice).Methods("GET")
 
 	r.HandleFunc("/api/invoices", c.GetInvoices).Methods("GET")
 
