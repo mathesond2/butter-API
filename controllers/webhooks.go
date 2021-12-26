@@ -7,6 +7,7 @@ import (
 	"go-invoices/models"
 	u "go-invoices/utils"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -28,7 +29,6 @@ func AddressIsRegistered(address string, u uint) bool {
 	}
 }
 
-//add an address to the mempool watch list
 func WatchAddress(address string) string {
 	supportedNetworks := []string{
 		"main",
@@ -71,7 +71,7 @@ func WatchAddress(address string) string {
 	return res.Msg
 }
 
-//add address to the mempool watch list and then add to the database
+//add address to the mempool watch list and then add to db
 func AddAddress(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
 	address := &models.Address{}
@@ -105,7 +105,53 @@ func AddAddress(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-//delete address to the mempool watch list and then delete from db
+func UnwatchAddress(address string) string {
+	supportedNetworks := []string{
+		"main",
+		"rinkeby",
+	}
+
+	params := make(map[string]interface{})
+	params["apiKey"] = os.Getenv("blocknative_api_key")
+	params["address"] = address
+	params["blockchain"] = "ethereum"
+	params["networks"] = supportedNetworks
+
+	bytesData, _ := json.Marshal(params)
+	reader := bytes.NewReader(bytesData)
+
+	httpReq, httpErr := http.NewRequest(
+		http.MethodDelete,
+		"https://api.blocknative.com/address",
+		reader,
+	)
+	httpReq.Header.Set("Content-Type", "application/json;charset=UTF-8")
+	if httpErr != nil {
+		fmt.Println("httpReq Error: ", httpErr)
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(httpReq)
+	if httpErr != nil {
+		fmt.Println("watch address Error: ", httpErr)
+		log.Fatalln(err)
+	}
+
+	defer resp.Body.Close()
+	body, ioErr := ioutil.ReadAll(resp.Body)
+	if ioErr != nil {
+		fmt.Println("ioErr: ", ioErr)
+	}
+
+	type WatchAddressResponse struct {
+		Msg string `json:"msg"`
+	}
+	var res WatchAddressResponse
+	json.Unmarshal(body, &res)
+	return res.Msg
+}
+
+//delete address from watch list and then from db
 func DeleteAddress(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
 	address := &models.Address{}
@@ -129,11 +175,11 @@ func DeleteAddress(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// unwatchAddressRes := UnwatchAddress(address.Address)
-	// if unwatchAddressRes != "success" {
-	// 	u.Respond(w, u.Message(false, unwatchAddressRes))
-	// 	return
-	// }
+	unwatchAddressRes := UnwatchAddress(address.Address)
+	if unwatchAddressRes != "success" {
+		u.Respond(w, u.Message(false, unwatchAddressRes))
+		return
+	}
 
 	resp := models.DeleteAddress(address)
 	u.Respond(w, resp)
