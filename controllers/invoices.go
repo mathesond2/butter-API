@@ -11,9 +11,20 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func hasRegisteredAddress(a1 string, a2 string, user uint) bool {
+	res1 := AddressIsRegistered(a1, user)
+	res2 := AddressIsRegistered(a2, user)
+	if res1 || res2 {
+		return true
+	} else {
+		return false
+	}
+}
+
 func CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
 	invoice := &models.Invoice{}
+	invoice.UserId = user
 
 	err := json.NewDecoder(r.Body).Decode(invoice)
 	if err != nil {
@@ -22,7 +33,22 @@ func CreateInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	invoice.UserId = user
+	if !u.IsValidEthAddress(invoice.Recipient_Address) || !u.IsValidEthAddress(invoice.Sender_Address) {
+		u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
+		return
+	}
+
+	isRegistered := hasRegisteredAddress(
+		invoice.Recipient_Address,
+		invoice.Sender_Address,
+		user,
+	)
+
+	if !isRegistered {
+		u.Respond(w, u.Message(false, "At least one of the addresses provided must be registered with your account"))
+		return
+	}
+
 	resp := invoice.CreateInvoice()
 	u.Respond(w, resp)
 }

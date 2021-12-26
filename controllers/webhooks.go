@@ -10,7 +10,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
 type PostBody struct {
@@ -84,7 +83,7 @@ func AddAddress(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !strings.HasPrefix(address.Address, "0x") {
+	if !u.IsValidEthAddress(address.Address) {
 		u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
 		return
 	}
@@ -164,7 +163,7 @@ func DeleteAddress(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !strings.HasPrefix(address.Address, "0x") {
+	if !u.IsValidEthAddress(address.Address) {
 		u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
 		return
 	}
