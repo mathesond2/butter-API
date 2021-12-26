@@ -81,6 +81,12 @@ func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ok, msg := PassesAddressChecks(invoice, user)
+	if !ok {
+		u.Respond(w, u.Message(false, msg))
+		return
+	}
+
 	resp := models.UpdateInvoice(id, invoice)
 	u.Respond(w, resp)
 }
