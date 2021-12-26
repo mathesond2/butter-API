@@ -94,16 +94,13 @@ func AddAddress(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := models.CreateAddress(address)
-	if resp != nil {
-		watchAddressRes := WatchAddress(address.Address)
-		if watchAddressRes != "success" {
-			u.Respond(w, u.Message(false, watchAddressRes))
-			return
-		}
-
+	watchAddressRes := WatchAddress(address.Address)
+	if watchAddressRes != "success" { //response body from blocknative endpoint
+		u.Respond(w, u.Message(false, watchAddressRes))
+		return
 	}
 
+	resp := models.CreateAddress(address)
 	u.Respond(w, resp)
 }
 
