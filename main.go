@@ -36,7 +36,7 @@ func main() {
 	r.HandleFunc("/api/webhooks", c.AddWebhook).Methods("POST")
 
 	r.HandleFunc("/api/invoice", c.CreateInvoice).Methods("POST")
-	r.HandleFunc("/api/invoice/{id}", c.UpdateInvoice).Methods("PUT")
+	r.HandleFunc("/api/invoice", c.UpdateInvoice).Methods("PUT")
 	r.HandleFunc("/api/invoice/{id}", c.DeleteInvoice).Methods("DELETE")
 	r.HandleFunc("/api/invoice/{id}", c.GetInvoice).Methods("GET")
 	r.HandleFunc("/api/invoices", c.GetInvoices).Methods("GET")

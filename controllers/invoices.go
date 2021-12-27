@@ -66,12 +66,7 @@ func CreateInvoice(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
-	//should check if user is the owner of the invoice (user id)
-
 	user := r.Context().Value("user").(uint)
-	vars := mux.Vars(r)
-	id, _ := strconv.ParseUint(vars["id"], 10, 32)
-
 	invoice := &models.Invoice{}
 	invoice.UserId = user
 
@@ -87,7 +82,7 @@ func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := models.UpdateInvoice(id, invoice)
+	resp := models.UpdateInvoice(invoice)
 	u.Respond(w, resp)
 }
 

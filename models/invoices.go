@@ -12,6 +12,7 @@ type Invoice struct {
 	Name              string  `json:"name"`
 	Description       string  `json:"description"`
 	UserId            uint    `json:"user_id"`
+	Id                uint    `json:"id"`
 	Sender_Address    string  `json:"sender_address"`
 	Token_Address     string  `json:"token_address"`
 	Amount            float64 `json:"amount"`
@@ -59,13 +60,13 @@ func (i *Invoice) CreateInvoice() map[string]interface{} {
 	return resp
 }
 
-func UpdateInvoice(id uint64, reqinvoice *Invoice) map[string]interface{} {
+func UpdateInvoice(reqinvoice *Invoice) map[string]interface{} {
 	if resp, ok := reqinvoice.ValidateInvoice(); !ok {
 		return resp
 	}
 
 	invoice := &Invoice{}
-	err := GetDB().Table("invoices").Where("id = ? AND user_id = ?", id, reqinvoice.UserId).First(invoice).Error
+	err := GetDB().Table("invoices").Where("id = ? AND user_id = ?", reqinvoice.Id, reqinvoice.UserId).First(invoice).Error
 	if err != nil {
 		fmt.Println(err)
 		errStr := err.Error()
@@ -79,9 +80,10 @@ func UpdateInvoice(id uint64, reqinvoice *Invoice) map[string]interface{} {
 	invoice.Amount = reqinvoice.Amount
 	invoice.To = reqinvoice.To
 	invoice.Recipient_Address = reqinvoice.Recipient_Address
+	invoice.Id = reqinvoice.Id
 	invoice.Status = reqinvoice.Status
 
-	updatedErr := GetDB().Table("invoices").Where("id = ?", id).Save(invoice).Error
+	updatedErr := GetDB().Table("invoices").Where("id = ?", reqinvoice.Id).Save(invoice).Error
 	if updatedErr != nil {
 		fmt.Println(updatedErr)
 		errStr := err.Error()
