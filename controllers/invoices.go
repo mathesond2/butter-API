@@ -6,9 +6,6 @@ import (
 	"go-invoices/models"
 	u "go-invoices/utils"
 	"net/http"
-	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 func hasRegisteredAddress(a1 string, a2 string, user uint) bool {
@@ -110,9 +107,14 @@ func DeleteInvoice(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetInvoice(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, _ := strconv.ParseUint(vars["id"], 10, 32)
-	data := models.GetInvoice(id)
+	userInfo := &models.UserInfo{}
+	err := json.NewDecoder(r.Body).Decode(userInfo)
+	if err != nil {
+		u.Respond(w, u.Message(false, "Error while decoding request body"))
+		return
+	}
+
+	data := models.GetInvoice(userInfo.Id)
 	resp := u.Message(true, "success")
 	resp["data"] = data
 	u.Respond(w, resp)

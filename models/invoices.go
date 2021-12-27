@@ -117,7 +117,7 @@ func DeleteInvoice(userInfo *UserInfo) (string, error) {
 	return "invoice successfully deleted", nil
 }
 
-func GetInvoice(id uint64) *Invoice {
+func GetInvoice(id uint) *Invoice {
 	i := &Invoice{}
 
 	err := GetDB().Table("invoices").Where("id = ?", id).First(i).Error
