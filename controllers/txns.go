@@ -41,8 +41,8 @@ func ParseMempoolEvent(w http.ResponseWriter, r *http.Request) {
 
 	updateInvoiceReq, error := http.NewRequest(
 		http.MethodPost,
-		"http://stormy-cove-04196.herokuapp.com/api/webhooks/UpdateInvoiceStatusFromEvent",
-		// "http://localhost:8000/api/webhooks/UpdateInvoiceStatusFromEvent",
+		"http://stormy-cove-04196.herokuapp.com/api/webhooks/updateInvoiceStatusFromEvent",
+		// "http://localhost:8000/api/webhooks/updateInvoiceStatusFromEvent",
 		reader,
 	)
 	updateInvoiceReq.Header.Set("Content-Type", "application/json;charset=UTF-8")
