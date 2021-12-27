@@ -32,10 +32,10 @@ func main() {
 	r.HandleFunc("/api/address", c.AddAddress).Methods("POST")
 	r.HandleFunc("/api/address", c.DeleteAddress).Methods("DELETE")
 	r.HandleFunc("/api/addresses", c.GetAddresses).Methods("GET")
+
 	r.HandleFunc("/api/webhooks", c.AddWebhook).Methods("POST")
 	r.HandleFunc("/api/webhooks", c.DeleteWebhook).Methods("DELETE")
 	r.HandleFunc("/api/webhooks", c.GetWebhooks).Methods("GET")
-	// need endpoint to delete webhooks
 
 	r.HandleFunc("/api/invoice", c.CreateInvoice).Methods("POST")
 	r.HandleFunc("/api/invoice", c.UpdateInvoice).Methods("PUT")
