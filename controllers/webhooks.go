@@ -208,6 +208,22 @@ func AddWebhook(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
+func DeleteWebhook(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value("user").(uint)
+	webhook := &models.Webhook{}
+	webhook.UserId = user
+
+	err := json.NewDecoder(r.Body).Decode(webhook)
+	if err != nil {
+		fmt.Println(err)
+		u.Respond(w, u.Message(false, "DeleteWebhook: Error while decoding request body"))
+		return
+	}
+
+	resp := models.DeleteWebhook(webhook)
+	u.Respond(w, resp)
+}
+
 func GetWebhooks(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("user").(uint)
 	data := models.GetWebhooks(id)

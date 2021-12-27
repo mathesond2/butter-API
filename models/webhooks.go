@@ -132,3 +132,21 @@ func GetWebhooks(user uint) []*Webhook {
 
 	return webhooks
 }
+
+func DeleteWebhook(w *Webhook) map[string]interface{} {
+	webhook := &Webhook{}
+
+	deleteErr := GetDB().Table("addresses").Where(&Webhook{
+		// ID:     w.ID,
+		UserId: w.UserId,
+	}).Delete(&webhook).Error
+	if deleteErr != nil {
+		fmt.Println("DeleteInvoice delete error: ", deleteErr)
+		return nil
+	}
+
+	resp := u.Message(true, "success")
+	msg := fmt.Sprintf("webhook %s has been deleted.", w.Name)
+	resp["data"] = msg
+	return resp
+}
