@@ -53,10 +53,7 @@ func (i *Invoice) CreateInvoice() map[string]interface{} {
 		return resp
 	}
 
-	//add check here for if reqInvoice.reciptient_address/ sender_address is registered with the user
-
 	GetDB().Create(i)
-
 	resp := u.Message(true, "success")
 	resp["invoice"] = i
 	return resp

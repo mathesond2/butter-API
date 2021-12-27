@@ -42,14 +42,7 @@ func UpdateInvoiceStatusFromEvent(txn *ParsedTransaction) *Invoice {
 		return nil
 	}
 
-	// TODO: this could just be `invoice.Status = txn.Status`
-	var status string
-	if txn.Status == "confirmed" {
-		status = "confirmed"
-	} else {
-		status = "pending"
-	}
-	invoice.Status = status
+	invoice.Status = txn.Status
 
 	updatedErr := GetDB().Table("invoices").Where("id = ?", invoice.ID).Save(invoice).Error
 	if updatedErr != nil {
