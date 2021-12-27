@@ -21,6 +21,11 @@ type Invoice struct {
 	Status            string  `json:"status"`
 }
 
+type UserInfo struct {
+	UserId uint `json:"user_id"`
+	Id     uint `json:"id"`
+}
+
 func (i *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
 	if i.Sender_Address == "" {
 		return u.Message(false, "sender address should be on the payload"), false
@@ -95,15 +100,15 @@ func UpdateInvoice(reqinvoice *Invoice) map[string]interface{} {
 	return resp
 }
 
-func DeleteInvoice(id uint64, userId uint) (string, error) {
+func DeleteInvoice(userInfo *UserInfo) (string, error) {
 	invoice := &Invoice{}
-	err := GetDB().Table("invoices").Where("id = ? AND user_id = ?", id, userId).First(invoice).Error
+	err := GetDB().Table("invoices").Where("id = ? AND user_id = ?", userInfo.Id, userInfo.UserId).First(invoice).Error
 	if err != nil {
 		fmt.Println("DeleteInvoice find error: ", err)
 		return "", err
 	}
 
-	deleteErr := GetDB().Table("invoices").Where("id = ? AND user_id = ?", id, userId).Delete(invoice).Error
+	deleteErr := GetDB().Table("invoices").Where("id = ? AND user_id = ?", userInfo.Id, userInfo.UserId).Delete(invoice).Error
 	if deleteErr != nil {
 		fmt.Println("DeleteInvoice delete error: ", deleteErr)
 		return "", deleteErr

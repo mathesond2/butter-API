@@ -88,10 +88,15 @@ func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 
 func DeleteInvoice(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
-	vars := mux.Vars(r)
-	id, _ := strconv.ParseUint(vars["id"], 10, 32)
+	userInfo := &models.UserInfo{}
+	userInfo.UserId = user
 
-	data, err := models.DeleteInvoice(id, user)
+	err := json.NewDecoder(r.Body).Decode(userInfo)
+	if err != nil {
+		u.Respond(w, u.Message(false, "Error while decoding request body"))
+		return
+	}
+	data, err := models.DeleteInvoice(userInfo)
 
 	var resp map[string]interface{}
 	if err != nil {
