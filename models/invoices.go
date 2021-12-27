@@ -96,23 +96,21 @@ func UpdateInvoice(id uint64, reqinvoice *Invoice) map[string]interface{} {
 	return resp
 }
 
-func DeleteInvoice(id uint64) *Invoice {
+func DeleteInvoice(id uint64, userId uint) (string, error) {
 	invoice := &Invoice{}
-
-	invoiceBeforeDeletion := &Invoice{}
-	err := GetDB().Table("invoices").Where("id = ?", id).First(invoiceBeforeDeletion).Error
+	err := GetDB().Table("invoices").Where("id = ? AND user_id = ?", id, userId).First(invoice).Error
 	if err != nil {
 		fmt.Println("DeleteInvoice find error: ", err)
-		return nil
+		return "", err
 	}
 
-	deleteErr := GetDB().Table("invoices").Where("id = ?", id).Delete(invoice).Error
+	deleteErr := GetDB().Table("invoices").Where("id = ? AND user_id = ?", id, userId).Delete(invoice).Error
 	if deleteErr != nil {
 		fmt.Println("DeleteInvoice delete error: ", deleteErr)
-		return nil
+		return "", deleteErr
 	}
 
-	return invoiceBeforeDeletion
+	return "invoice successfully deleted", nil
 }
 
 func GetInvoice(id uint64) *Invoice {

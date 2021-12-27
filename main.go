@@ -23,22 +23,22 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/api/user", c.CreateAccount).Methods("POST")
-	r.HandleFunc("/api/user/login", c.Authenticate).Methods("POST")
-
-	r.HandleFunc("/api/webhooks", c.AddWebhook).Methods("POST")
-	r.HandleFunc("/api/webhooks/address", c.AddAddress).Methods("POST")
-	r.HandleFunc("/api/webhooks/address", c.DeleteAddress).Methods("DELETE")
-
 	//Private
 	r.HandleFunc("/api/webhooks/mempoolEvent", c.ParseMempoolEvent).Methods("POST")
 	r.HandleFunc("/api/webhooks/UpdateInvoiceStatusFromEvent", c.UpdateInvoiceStatusFromEvent).Methods("POST") //prob should be put
+
+	//Public
+	r.HandleFunc("/api/user", c.CreateAccount).Methods("POST")
+	r.HandleFunc("/api/user/login", c.Authenticate).Methods("POST")
+
+	r.HandleFunc("/api/address", c.AddAddress).Methods("POST")
+	r.HandleFunc("/api/address", c.DeleteAddress).Methods("DELETE")
+	r.HandleFunc("/api/webhooks", c.AddWebhook).Methods("POST")
 
 	r.HandleFunc("/api/invoice", c.CreateInvoice).Methods("POST")
 	r.HandleFunc("/api/invoice/{id}", c.UpdateInvoice).Methods("PUT")
 	r.HandleFunc("/api/invoice/{id}", c.DeleteInvoice).Methods("DELETE")
 	r.HandleFunc("/api/invoice/{id}", c.GetInvoice).Methods("GET")
-
 	r.HandleFunc("/api/invoices", c.GetInvoices).Methods("GET")
 
 	r.Use(app.JwtAuthentication)

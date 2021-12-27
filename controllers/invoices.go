@@ -92,13 +92,20 @@ func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteInvoice(w http.ResponseWriter, r *http.Request) {
-	//should check if user is the owner of the invoice (user id)
-
+	user := r.Context().Value("user").(uint)
 	vars := mux.Vars(r)
 	id, _ := strconv.ParseUint(vars["id"], 10, 32)
-	data := models.DeleteInvoice(id)
-	resp := u.Message(true, "success")
-	resp["data"] = data
+
+	data, err := models.DeleteInvoice(id, user)
+
+	var resp map[string]interface{}
+	if err != nil {
+		resp = u.Message(false, err.Error())
+	} else {
+		resp = u.Message(true, "success")
+		resp["data"] = data
+	}
+
 	u.Respond(w, resp)
 }
 
