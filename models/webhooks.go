@@ -9,11 +9,11 @@ import (
 
 type Webhook struct {
 	gorm.Model
-	Address      string    `json:"address"`
-	Networks     [2]string `json:"networks"`
-	Name         string    `json:"name"`
-	Endpoint_Url string    `json:"endpoint_url"`
-	UserId       uint      `json:"user_id"`
+	Address      string `json:"address"`
+	Networks     string `json:"networks"`
+	Name         string `json:"name"`
+	Endpoint_Url string `json:"endpoint_url"`
+	UserId       uint   `json:"user_id"`
 }
 
 type Address struct {
@@ -52,10 +52,10 @@ func CreateWebhook(w *Webhook) map[string]interface{} {
 		return resp
 	}
 
-	networks := [2]string{"main", "rinkeby"} //until we need a user to specify
+	// networks := [2]string{"main", "rinkeby"} //until we need a user to specify
 	webhookWithNetworks := &Webhook{
 		Address:      w.Address,
-		Networks:     networks,
+		Networks:     "main rinkeby",
 		Name:         w.Name,
 		Endpoint_Url: w.Endpoint_Url,
 		UserId:       w.UserId,
