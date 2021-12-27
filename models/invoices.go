@@ -67,13 +67,12 @@ func UpdateInvoice(id uint64, reqinvoice *Invoice) map[string]interface{} {
 		return resp
 	}
 
-	//add check here for if reqInvoice.reciptient_address/ sender_address is registered with the user
-
 	invoice := &Invoice{}
-	err := GetDB().Table("invoices").Where("id = ?", id).First(invoice).Error
+	err := GetDB().Table("invoices").Where("id = ? AND user_id = ?", id, reqinvoice.UserId).First(invoice).Error
 	if err != nil {
 		fmt.Println(err)
-		return nil
+		errStr := err.Error()
+		return u.Message(false, errStr)
 	}
 
 	invoice.Name = reqinvoice.Name
@@ -88,7 +87,8 @@ func UpdateInvoice(id uint64, reqinvoice *Invoice) map[string]interface{} {
 	updatedErr := GetDB().Table("invoices").Where("id = ?", id).Save(invoice).Error
 	if updatedErr != nil {
 		fmt.Println(updatedErr)
-		return nil
+		errStr := err.Error()
+		return u.Message(false, errStr)
 	}
 
 	resp := u.Message(true, "success")
