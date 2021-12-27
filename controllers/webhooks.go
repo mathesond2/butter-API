@@ -214,7 +214,7 @@ func GetWebhookByUserId(u uint) *models.Webhook {
 
 type WebhookReqBody struct {
 	Name     string          `json:"name"`
-	Networks [2]string       `json:"networks"`
+	Networks string          `json:"networks"`
 	Invoice  *models.Invoice `json:"invoice"`
 }
 
