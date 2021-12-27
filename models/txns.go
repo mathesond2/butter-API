@@ -35,7 +35,7 @@ func UpdateInvoiceStatusFromEvent(txn *ParsedTransaction) *Invoice {
 		Sender_Address:    txn.From,
 		Recipient_Address: txn.To,
 		Amount:            txn.Value,
-		Status:            "in progress",
+		Status:            "pending",
 	}).First(&invoice).Error
 	if err != nil {
 		fmt.Println("UpdateInvoiceStatusFromEvent error: ", err)

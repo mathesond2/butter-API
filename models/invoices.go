@@ -136,7 +136,7 @@ func UpdateInvoiceStatus(id uint) *Invoice {
 		return nil
 	}
 
-	invoice.Status = "in progress"
+	invoice.Status = "pending"
 
 	updatedErr := GetDB().Table("invoices").Where("id = ?", invoice.ID).Save(invoice).Error
 	if updatedErr != nil {
