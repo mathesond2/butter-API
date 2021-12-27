@@ -120,11 +120,31 @@ func GetInvoice(id uint) *Invoice {
 
 	err := GetDB().Table("invoices").Where("id = ?", id).First(i).Error
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("GetInvoice error: ", err)
 		return nil
 	}
 
 	return i
+}
+
+func UpdateInvoiceStatus(id uint) *Invoice {
+	invoice := &Invoice{}
+
+	err := GetDB().Table("invoices").Where("id = ?", id).First(invoice).Error
+	if err != nil {
+		fmt.Println("UpdateInvoiceStatus error: ", err)
+		return nil
+	}
+
+	invoice.Status = "in progress"
+
+	updatedErr := GetDB().Table("invoices").Where("id = ?", invoice.ID).Save(invoice).Error
+	if updatedErr != nil {
+		fmt.Println(updatedErr)
+		return nil
+	}
+
+	return invoice
 }
 
 func GetInvoices(user uint64) []*Invoice {

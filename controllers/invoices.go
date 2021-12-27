@@ -40,6 +40,20 @@ func PassesAddressChecks(invoice *models.Invoice, user uint) (bool, string) {
 	return true, ""
 }
 
+func UpdateInvoiceStatus(w http.ResponseWriter, r *http.Request) {
+	userInfo := &models.UserInfo{}
+	err := json.NewDecoder(r.Body).Decode(userInfo)
+	if err != nil {
+		u.Respond(w, u.Message(false, "Error while decoding request body"))
+		return
+	}
+
+	data := models.UpdateInvoiceStatus(userInfo.ID)
+	resp := u.Message(true, "success")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
 func CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
 	invoice := &models.Invoice{}

@@ -38,7 +38,7 @@ func UpdateInvoiceStatusFromEvent(txn *ParsedTransaction) *Invoice {
 		Amount:            txn.Value,
 	}).First(&invoice).Error
 	if err != nil {
-		fmt.Println(err, "UpdateInvoiceStatusFromEvent")
+		fmt.Println("UpdateInvoiceStatusFromEvent error: ", err)
 		return nil
 	}
 
