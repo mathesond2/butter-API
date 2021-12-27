@@ -104,6 +104,14 @@ func AddAddress(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
+func GetAddresses(w http.ResponseWriter, r *http.Request) {
+	id := r.Context().Value("user").(uint)
+	data := models.GetAddresses(id)
+	resp := u.Message(true, "success")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
 func UnwatchAddress(address string) string {
 	supportedNetworks := []string{
 		"main",

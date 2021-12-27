@@ -108,3 +108,15 @@ func FindAddress(a string, user uint) map[string]interface{} {
 	resp["data"] = address.Address
 	return resp
 }
+
+func GetAddresses(user uint) []*Address {
+	addresses := make([]*Address, 0)
+
+	err := GetDB().Table("addresses").Where("user_id = ?", user).Find(&addresses).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return addresses
+}

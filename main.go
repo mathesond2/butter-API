@@ -23,6 +23,7 @@ func main() {
 	//Private
 	r.HandleFunc("/api/webhooks/mempoolEvent", c.ParseMempoolEvent).Methods("POST")
 	r.HandleFunc("/api/webhooks/updateInvoiceStatusFromEvent", c.UpdateInvoiceStatusFromEvent).Methods("POST") //prob should be put
+	r.HandleFunc("/api/invoice/status", c.UpdateInvoiceStatus).Methods("POST")
 
 	//Public
 	r.HandleFunc("/api/user", c.CreateAccount).Methods("POST")
@@ -30,9 +31,9 @@ func main() {
 
 	r.HandleFunc("/api/address", c.AddAddress).Methods("POST")
 	r.HandleFunc("/api/address", c.DeleteAddress).Methods("DELETE")
+	r.HandleFunc("/api/addresses", c.GetAddresses).Methods("GET")
 	r.HandleFunc("/api/webhooks", c.AddWebhook).Methods("POST")
 
-	r.HandleFunc("/api/invoice/status", c.UpdateInvoiceStatus).Methods("POST")
 	r.HandleFunc("/api/invoice", c.CreateInvoice).Methods("POST")
 	r.HandleFunc("/api/invoice", c.UpdateInvoice).Methods("PUT")
 	r.HandleFunc("/api/invoice", c.DeleteInvoice).Methods("DELETE")
