@@ -27,6 +27,10 @@ type UserInfo struct {
 }
 
 func (i *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
+	if i.UserId <= 0 {
+		return u.Message(false, "User is not recognized"), false
+	}
+
 	if i.Sender_Address == "" {
 		return u.Message(false, "sender address should be on the payload"), false
 	}
@@ -41,10 +45,6 @@ func (i *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
 
 	if i.Recipient_Address == "" {
 		return u.Message(false, "recipient address should be on the payload"), false
-	}
-
-	if i.UserId <= 0 {
-		return u.Message(false, "User is not recognized"), false
 	}
 
 	if i.Status == "" {
@@ -80,12 +80,12 @@ func UpdateInvoice(reqinvoice *Invoice) map[string]interface{} {
 
 	invoice.Name = reqinvoice.Name
 	invoice.Description = reqinvoice.Description
+	invoice.Id = reqinvoice.Id
 	invoice.Sender_Address = reqinvoice.Sender_Address
 	invoice.Token_Address = reqinvoice.Token_Address
 	invoice.Amount = reqinvoice.Amount
 	invoice.To = reqinvoice.To
 	invoice.Recipient_Address = reqinvoice.Recipient_Address
-	invoice.Id = reqinvoice.Id
 	invoice.Status = reqinvoice.Status
 
 	updatedErr := GetDB().Table("invoices").Where("id = ?", reqinvoice.Id).Save(invoice).Error
