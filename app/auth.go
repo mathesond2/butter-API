@@ -20,7 +20,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 			"/api/user/login",
 			"/api/webhooks/mempoolEvent",
 			"/api/webhooks/associatedTxn",
-			"/api/invoice/pay",
+			"/api/invoice/status",
 		}
 		requestPath := r.URL.Path
 

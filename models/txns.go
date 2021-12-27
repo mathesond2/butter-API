@@ -31,11 +31,11 @@ type ParsedTransaction struct {
 func UpdateInvoiceStatusFromEvent(txn *ParsedTransaction) *Invoice {
 	invoice := &Invoice{}
 
-	//TODO: check invoice status for "in progress"
 	err := GetDB().Table("invoices").Where(&Invoice{
 		Sender_Address:    txn.WatchedAddress,
 		Recipient_Address: txn.To,
 		Amount:            txn.Value,
+		Status:            "in progress",
 	}).First(&invoice).Error
 	if err != nil {
 		fmt.Println("UpdateInvoiceStatusFromEvent error: ", err)
