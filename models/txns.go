@@ -32,7 +32,7 @@ func UpdateInvoiceStatusFromEvent(txn *ParsedTransaction) *Invoice {
 	invoice := &Invoice{}
 
 	err := GetDB().Table("invoices").Where(&Invoice{
-		Sender_Address:    txn.WatchedAddress,
+		Sender_Address:    txn.From,
 		Recipient_Address: txn.To,
 		Amount:            txn.Value,
 		Status:            "in progress",

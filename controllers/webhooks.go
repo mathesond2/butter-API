@@ -205,7 +205,7 @@ func GetWebhookByUserId(u uint) *models.Webhook {
 
 	err := models.GetDB().Table("webhooks").Where("user_id = ?", u).First(w).Error
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("GetWebhookByUserId err: ", err)
 		return nil
 	}
 

@@ -85,7 +85,7 @@ func UpdateInvoiceStatusFromEvent(w http.ResponseWriter, r *http.Request) {
 
 	//send update to any user-registered webhooks
 	webhook := GetWebhookByUserId(data.UserId)
-	if webhook.Address != "" {
+	if webhook != nil {
 		SendDataToWebhook(*webhook, data)
 	}
 
