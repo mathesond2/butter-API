@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"go-invoices/app"
 	c "go-invoices/controllers"
-	m "go-invoices/models"
 	u "go-invoices/utils"
 	"net/http"
 	"os"
@@ -15,12 +14,10 @@ import (
 
 var NotFound = func(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
-	u.Respond(w, u.Message(false, "This resources was not found on our server"))
+	u.Respond(w, u.Message(false, "This resource was not found on our server"))
 }
 
 func main() {
-	m.GetDB()
-
 	r := mux.NewRouter()
 
 	//Private

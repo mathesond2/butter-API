@@ -9,7 +9,9 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func GetDB() *gorm.DB {
+var db *gorm.DB
+
+func init() {
 	e := godotenv.Load()
 	if e != nil {
 		fmt.Print(e)
@@ -29,12 +31,15 @@ func GetDB() *gorm.DB {
 	}
 
 	dbUri := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s password=%s", dbHost, dbPort, username, dbName, sslMode, password)
-	db, err := gorm.Open("postgres", dbUri)
+	conn, err := gorm.Open("postgres", dbUri)
 	if err != nil {
 		fmt.Print(err)
 	}
 
+	db = conn
 	db.Debug().AutoMigrate(&Account{}, &Invoice{}, &Webhook{}, &Address{})
+}
 
+func GetDB() *gorm.DB {
 	return db
 }
