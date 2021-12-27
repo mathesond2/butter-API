@@ -147,7 +147,7 @@ func UpdateInvoiceStatus(id uint) *Invoice {
 	return invoice
 }
 
-func GetInvoices(user uint64) []*Invoice {
+func GetInvoices(user uint) []*Invoice {
 	invoices := make([]*Invoice, 0)
 
 	err := GetDB().Table("invoices").Where("user_id = ?", user).Find(&invoices).Error
