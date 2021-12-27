@@ -120,3 +120,15 @@ func GetAddresses(user uint) []*Address {
 
 	return addresses
 }
+
+func GetWebhooks(user uint) []*Webhook {
+	webhooks := make([]*Webhook, 0)
+
+	err := GetDB().Table("webhooks").Where("user_id = ?", user).Find(&webhooks).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return webhooks
+}

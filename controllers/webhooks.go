@@ -208,6 +208,14 @@ func AddWebhook(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
+func GetWebhooks(w http.ResponseWriter, r *http.Request) {
+	id := r.Context().Value("user").(uint)
+	data := models.GetWebhooks(id)
+	resp := u.Message(true, "success")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
 func GetWebhookByUserId(u uint) *models.Webhook {
 	w := &models.Webhook{}
 
