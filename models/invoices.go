@@ -12,7 +12,6 @@ type Invoice struct {
 	Name              string  `json:"name"`
 	Description       string  `json:"description"`
 	UserId            uint    `json:"user_id"`
-	Id                uint    `json:"id"`
 	Sender_Address    string  `json:"sender_address"`
 	Token_Address     string  `json:"token_address"`
 	Amount            float64 `json:"amount"`
@@ -23,7 +22,7 @@ type Invoice struct {
 
 type UserInfo struct {
 	UserId uint `json:"user_id"`
-	Id     uint `json:"id"`
+	ID     uint `json:"ID"`
 }
 
 func (i *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
@@ -71,7 +70,7 @@ func UpdateInvoice(reqinvoice *Invoice) map[string]interface{} {
 	}
 
 	invoice := &Invoice{}
-	err := GetDB().Table("invoices").Where("id = ? AND user_id = ?", reqinvoice.Id, reqinvoice.UserId).First(invoice).Error
+	err := GetDB().Table("invoices").Where("id = ? AND user_id = ?", reqinvoice.ID, reqinvoice.UserId).First(invoice).Error
 	if err != nil {
 		fmt.Println(err)
 		errStr := err.Error()
@@ -80,7 +79,6 @@ func UpdateInvoice(reqinvoice *Invoice) map[string]interface{} {
 
 	invoice.Name = reqinvoice.Name
 	invoice.Description = reqinvoice.Description
-	invoice.Id = reqinvoice.Id
 	invoice.Sender_Address = reqinvoice.Sender_Address
 	invoice.Token_Address = reqinvoice.Token_Address
 	invoice.Amount = reqinvoice.Amount
@@ -88,7 +86,7 @@ func UpdateInvoice(reqinvoice *Invoice) map[string]interface{} {
 	invoice.Recipient_Address = reqinvoice.Recipient_Address
 	invoice.Status = reqinvoice.Status
 
-	updatedErr := GetDB().Table("invoices").Where("id = ?", reqinvoice.Id).Save(invoice).Error
+	updatedErr := GetDB().Table("invoices").Where("id = ?", reqinvoice.ID).Save(invoice).Error
 	if updatedErr != nil {
 		fmt.Println(updatedErr)
 		errStr := err.Error()
@@ -102,13 +100,13 @@ func UpdateInvoice(reqinvoice *Invoice) map[string]interface{} {
 
 func DeleteInvoice(userInfo *UserInfo) (string, error) {
 	invoice := &Invoice{}
-	err := GetDB().Table("invoices").Where("id = ? AND user_id = ?", userInfo.Id, userInfo.UserId).First(invoice).Error
+	err := GetDB().Table("invoices").Where("id = ? AND user_id = ?", userInfo.ID, userInfo.UserId).First(invoice).Error
 	if err != nil {
 		fmt.Println("DeleteInvoice find error: ", err)
 		return "", err
 	}
 
-	deleteErr := GetDB().Table("invoices").Where("id = ? AND user_id = ?", userInfo.Id, userInfo.UserId).Delete(invoice).Error
+	deleteErr := GetDB().Table("invoices").Where("id = ? AND user_id = ?", userInfo.ID, userInfo.UserId).Delete(invoice).Error
 	if deleteErr != nil {
 		fmt.Println("DeleteInvoice delete error: ", deleteErr)
 		return "", deleteErr

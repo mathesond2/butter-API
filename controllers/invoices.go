@@ -114,7 +114,7 @@ func GetInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := models.GetInvoice(userInfo.Id)
+	data := models.GetInvoice(userInfo.ID)
 	resp := u.Message(true, "success")
 	resp["data"] = data
 	u.Respond(w, resp)
