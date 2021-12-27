@@ -3,25 +3,17 @@ package models
 import (
 	"fmt"
 	u "go-invoices/utils"
-	"strings"
 
 	"github.com/jinzhu/gorm"
 )
 
-type PreParsedWebhook struct {
-	Address      string   `json:"address"`
-	Networks     []string `json:"networks"`
-	Name         string   `json:"name"`
-	Endpoint_Url string   `json:"endpoint_url"`
-	UserId       uint     `json:"user_id"`
-}
 type Webhook struct {
 	gorm.Model
-	Address      string `json:"address"`
-	Networks     string `json:"networks"`
-	Name         string `json:"name"`
-	Endpoint_Url string `json:"endpoint_url"`
-	UserId       uint   `json:"user_id"`
+	Address      string    `json:"address"`
+	Networks     [2]string `json:"networks"`
+	Name         string    `json:"name"`
+	Endpoint_Url string    `json:"endpoint_url"`
+	UserId       uint      `json:"user_id"`
 }
 
 type Address struct {
@@ -35,13 +27,9 @@ type AddressAuth struct {
 	Addresses []string `json:"addresses"`
 }
 
-func (w *PreParsedWebhook) ValidateWebhook() (map[string]interface{}, bool) {
+func (w *Webhook) ValidateWebhook() (map[string]interface{}, bool) {
 	if w.Address == "" {
 		return u.Message(false, "address should be on the payload"), false
-	}
-
-	if len(w.Networks) == 0 {
-		return u.Message(false, "at least one chosen network should be on the payload"), false
 	}
 
 	if w.Name == "" {
@@ -59,22 +47,21 @@ func (w *PreParsedWebhook) ValidateWebhook() (map[string]interface{}, bool) {
 	return u.Message(true, "success"), true
 }
 
-func CreateWebhook(w *PreParsedWebhook) map[string]interface{} {
+func CreateWebhook(w *Webhook) map[string]interface{} {
 	if resp, ok := w.ValidateWebhook(); !ok {
 		return resp
 	}
 
-	hackyArrToStr := strings.Join(w.Networks, " ")
-
-	parsedWebhook := &Webhook{
+	networks := [2]string{"main", "rinkeby"} //until we need a user to specify
+	webhookWithNetworks := &Webhook{
 		Address:      w.Address,
-		Networks:     hackyArrToStr, //workaround for postgres not allowing slices ('networks' length will never be fixed amount)
+		Networks:     networks,
 		Name:         w.Name,
 		Endpoint_Url: w.Endpoint_Url,
 		UserId:       w.UserId,
 	}
 
-	GetDB().Create(parsedWebhook)
+	GetDB().Create(webhookWithNetworks)
 
 	resp := u.Message(true, "success")
 	resp["data"] = w

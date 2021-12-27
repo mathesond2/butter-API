@@ -95,7 +95,7 @@ func (account *Account) Create() map[string]interface{} {
 	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
 	account.Token = tokenString
 
-	account.Password = "" //delete password
+	account.Password = ""
 
 	response := u.Message(true, "Account has been created")
 	response["account"] = account

@@ -159,7 +159,7 @@ func DeleteAddress(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(address)
 	if err != nil {
 		fmt.Println(err)
-		u.Respond(w, u.Message(false, "addAddress: Error while decoding request body"))
+		u.Respond(w, u.Message(false, "DeleteAddress: Error while decoding request body"))
 		return
 	}
 
@@ -186,16 +186,15 @@ func DeleteAddress(w http.ResponseWriter, r *http.Request) {
 
 func AddWebhook(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
-	webhook := &models.PreParsedWebhook{}
+	webhook := &models.Webhook{}
+	webhook.UserId = user
 
 	err := json.NewDecoder(r.Body).Decode(webhook)
 	if err != nil {
 		fmt.Println(err)
-		u.Respond(w, u.Message(false, "addWebhook: Error while decoding request body"))
+		u.Respond(w, u.Message(false, "AddWebhook: Error while decoding request body"))
 		return
 	}
-
-	webhook.UserId = user
 
 	resp := models.CreateWebhook(webhook)
 	u.Respond(w, resp)
@@ -215,7 +214,7 @@ func GetWebhookByUserId(u uint) *models.Webhook {
 
 type WebhookReqBody struct {
 	Name     string          `json:"name"`
-	Networks string          `json:"networks"`
+	Networks [2]string       `json:"networks"`
 	Invoice  *models.Invoice `json:"invoice"`
 }
 
