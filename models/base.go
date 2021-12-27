@@ -12,6 +12,7 @@ import (
 var db *gorm.DB
 
 func init() {
+	fmt.Println("THIS IS THE MODELS INIT")
 	e := godotenv.Load()
 	if e != nil {
 		fmt.Print(e)
