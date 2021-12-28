@@ -15,9 +15,9 @@ func Respond(w http.ResponseWriter, data map[string]interface{}) {
 }
 
 func IsValidEthAddress(address string) bool {
-	// if len(address) != 42 {
-	// 	return false
-	// }
+	if len(address) != 42 {
+		return false
+	}
 
 	if address[0:2] != "0x" {
 		return false

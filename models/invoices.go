@@ -127,12 +127,12 @@ func GetInvoice(id uint) *Invoice {
 	return i
 }
 
-func UpdateInvoiceStatus(id uint) *Invoice {
+func UpdateInvoiceStatusAsPending(id uint) *Invoice {
 	invoice := &Invoice{}
 
 	err := GetDB().Table("invoices").Where("id = ?", id).First(invoice).Error
 	if err != nil {
-		fmt.Println("UpdateInvoiceStatus error: ", err)
+		fmt.Println("UpdateInvoiceStatusAsPending error: ", err)
 		return nil
 	}
 

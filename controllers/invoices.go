@@ -40,7 +40,7 @@ func PassesAddressChecks(invoice *models.Invoice, user uint) (bool, string) {
 	return true, ""
 }
 
-func UpdateInvoiceStatus(w http.ResponseWriter, r *http.Request) {
+func UpdateInvoiceStatusAsPending(w http.ResponseWriter, r *http.Request) {
 	userInfo := &models.UserInfo{}
 	err := json.NewDecoder(r.Body).Decode(userInfo)
 	if err != nil {
@@ -48,7 +48,7 @@ func UpdateInvoiceStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := models.UpdateInvoiceStatus(userInfo.ID)
+	data := models.UpdateInvoiceStatusAsPending(userInfo.ID)
 	resp := u.Message(true, "success")
 	resp["data"] = data
 	u.Respond(w, resp)

@@ -23,7 +23,7 @@ func main() {
 	//Private
 	r.HandleFunc("/api/webhooks/mempoolEvent", c.ParseMempoolEvent).Methods("POST")
 	r.HandleFunc("/api/webhooks/updateInvoiceStatusFromEvent", c.UpdateInvoiceStatusFromEvent).Methods("POST") //prob should be put
-	r.HandleFunc("/api/invoice/status", c.UpdateInvoiceStatus).Methods("POST")
+	r.HandleFunc("/api/invoice/status", c.UpdateInvoiceStatusAsPending).Methods("POST")
 
 	//Public
 	r.HandleFunc("/api/user", c.CreateAccount).Methods("POST")
