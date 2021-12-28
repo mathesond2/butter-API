@@ -241,18 +241,6 @@ func GetWebhooks(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-func GetWebhookByUserId(u uint) *models.Webhook {
-	w := &models.Webhook{}
-
-	err := models.GetDB().Table("webhooks").Where("user_id = ?", u).First(w).Error
-	if err != nil {
-		fmt.Println("GetWebhookByUserId err: ", err)
-		return nil
-	}
-
-	return w
-}
-
 type WebhookReqBody struct {
 	Name     string          `json:"name"`
 	Networks string          `json:"networks"`

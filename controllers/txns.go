@@ -84,7 +84,7 @@ func UpdateInvoiceStatusFromEvent(w http.ResponseWriter, r *http.Request) {
 	data := models.UpdateInvoiceStatusFromEvent(latestTxn)
 
 	//send update to any user-registered webhooks
-	webhook := GetWebhookByUserId(data.UserId)
+	webhook := models.GetWebhookByUserIdAndName(data.Webhook_Name, data.UserId)
 	if webhook != nil {
 		SendDataToWebhook(*webhook, data)
 	}

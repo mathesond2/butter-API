@@ -133,6 +133,21 @@ func GetWebhooks(user uint) []*Webhook {
 	return webhooks
 }
 
+func GetWebhookByUserIdAndName(name string, user uint) *Webhook {
+	webhook := &Webhook{}
+
+	err := GetDB().Table("webhooks").Where(&Webhook{
+		Name:   name,
+		UserId: user,
+	}).First(&webhook).Error
+	if err != nil {
+		fmt.Println("GetWebhookByUserIdAndName err: ", err)
+		return nil
+	}
+
+	return webhook
+}
+
 func FindWebhook(name string, user uint) map[string]interface{} {
 	webhook := &Webhook{}
 
