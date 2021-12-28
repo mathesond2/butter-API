@@ -28,6 +28,15 @@ func AddressIsRegistered(address string, u uint) bool {
 	}
 }
 
+func WebhookIsRegistered(name string, u uint) bool {
+	resp := models.FindWebhook(name, u)
+	if resp["data"] == nil {
+		return false
+	} else {
+		return true
+	}
+}
+
 func WatchAddress(address string) string {
 	supportedNetworks := []string{
 		"main",

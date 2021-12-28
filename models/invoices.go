@@ -18,6 +18,7 @@ type Invoice struct {
 	To                string  `json:"to"`
 	Recipient_Address string  `json:"recipient_address"`
 	Status            string  `json:"status"`
+	Webhook_Name      string  `json:"webhook_name"`
 }
 
 type UserInfo struct {
@@ -85,6 +86,7 @@ func UpdateInvoice(reqinvoice *Invoice) map[string]interface{} {
 	invoice.To = reqinvoice.To
 	invoice.Recipient_Address = reqinvoice.Recipient_Address
 	invoice.Status = reqinvoice.Status
+	invoice.Webhook_Name = reqinvoice.Webhook_Name
 
 	updatedErr := GetDB().Table("invoices").Where("id = ?", reqinvoice.ID).Save(invoice).Error
 	if updatedErr != nil {

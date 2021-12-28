@@ -18,7 +18,7 @@ func hasRegisteredAddress(a1 string, a2 string, user uint) bool {
 	}
 }
 
-func PassesAddressChecks(invoice *models.Invoice, user uint) (bool, string) {
+func PassesAddressAndWebhookChecks(invoice *models.Invoice, user uint) (bool, string) {
 	if len(invoice.Recipient_Address) == 0 || len(invoice.Sender_Address) == 0 {
 		return false, "both sender and recipient addresses must be on the payload"
 	}
@@ -35,6 +35,13 @@ func PassesAddressChecks(invoice *models.Invoice, user uint) (bool, string) {
 
 	if !isRegistered {
 		return false, "At least one of the addresses provided must be registered with your account"
+	}
+
+	if len(invoice.Webhook_Name) > 0 {
+		isRegisteredWebhook := WebhookIsRegistered(invoice.Webhook_Name, user)
+		if !isRegisteredWebhook {
+			return false, "The webhook name provided is not registered with your account"
+		}
 	}
 
 	return true, ""
@@ -66,7 +73,7 @@ func CreateInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ok, msg := PassesAddressChecks(invoice, user)
+	ok, msg := PassesAddressAndWebhookChecks(invoice, user)
 	if !ok {
 		u.Respond(w, u.Message(false, msg))
 		return
@@ -87,7 +94,7 @@ func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ok, msg := PassesAddressChecks(invoice, user)
+	ok, msg := PassesAddressAndWebhookChecks(invoice, user)
 	if !ok {
 		u.Respond(w, u.Message(false, msg))
 		return

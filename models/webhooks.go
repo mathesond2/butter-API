@@ -133,6 +133,22 @@ func GetWebhooks(user uint) []*Webhook {
 	return webhooks
 }
 
+func FindWebhook(name string, user uint) map[string]interface{} {
+	webhook := &Webhook{}
+
+	err := GetDB().Table("webhooks").Where(&Webhook{
+		Name:   name,
+		UserId: user,
+	}).First(&webhook).Error
+	if err != nil {
+		return nil
+	}
+
+	resp := u.Message(true, "success")
+	resp["data"] = webhook.Name
+	return resp
+}
+
 func DeleteWebhook(w *Webhook) map[string]interface{} {
 	webhook := &Webhook{}
 	record := GetDB().Table("webhooks").Where("id = ? AND user_id = ?", w.ID, w.UserId)
