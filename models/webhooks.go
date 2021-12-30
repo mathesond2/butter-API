@@ -17,9 +17,9 @@ type Webhook struct {
 }
 
 type Address struct {
-	gorm.Model
-	Address string `json:"address"`
-	UserId  uint   `json:"user_id"`
+	gorm.Model `json:"-"`
+	Address    string `json:"address"`
+	UserId     uint   `json:"-"`
 }
 
 type AddressAuth struct {
