@@ -19,6 +19,10 @@ type PostBody struct {
 	Networks   []string `json:"networks"`
 }
 
+type DeleteBody struct {
+	Name string `json:"name"`
+}
+
 func AddressIsRegistered(address string, u uint) bool {
 	resp := models.FindAddress(address, u)
 	if resp["data"] == nil {
@@ -222,17 +226,23 @@ func AddWebhook(w http.ResponseWriter, r *http.Request) {
 
 func DeleteWebhook(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
-	webhook := &models.Webhook{}
-	webhook.UserId = user
+	webhookReq := &DeleteBody{}
 
-	err := json.NewDecoder(r.Body).Decode(webhook)
+	err := json.NewDecoder(r.Body).Decode(webhookReq)
 	if err != nil {
 		fmt.Println(err)
+		w.WriteHeader(http.StatusNotFound)
 		u.Respond(w, u.Message(false, "DeleteWebhook: Error while decoding request body"))
 		return
 	}
 
-	resp := models.DeleteWebhook(webhook)
+	if webhookReq.Name == nil {
+		w.WriteHeader(http.StatusNotFound)
+		u.Respond(w, u.Message(false, "name property is required"))
+		return
+	}
+
+	resp := models.DeleteWebhook(webhookReq.Name, user)
 	u.Respond(w, resp)
 }
 

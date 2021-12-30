@@ -8,12 +8,12 @@ import (
 )
 
 type Webhook struct {
-	gorm.Model
+	gorm.Model   `json:"-"`
 	Address      string `json:"address"`
 	Networks     string `json:"networks"`
 	Name         string `json:"name"`
 	Endpoint_Url string `json:"endpoint_url"`
-	UserId       uint   `json:"user_id"`
+	UserId       uint   `json:"-"`
 }
 
 type Address struct {
@@ -164,9 +164,9 @@ func FindWebhook(name string, user uint) map[string]interface{} {
 	return resp
 }
 
-func DeleteWebhook(w *Webhook) map[string]interface{} {
+func DeleteWebhook(name string, userId uint) map[string]interface{} {
 	webhook := &Webhook{}
-	record := GetDB().Table("webhooks").Where("id = ? AND user_id = ?", w.ID, w.UserId)
+	record := GetDB().Table("webhooks").Where("name = ? AND user_id = ?", name, userId)
 
 	err := record.First(webhook).Error
 	if err != nil {
