@@ -98,7 +98,7 @@ func (account *Account) Create() map[string]interface{} {
 	account.Password = ""
 
 	response := u.Message(true, "Account has been created")
-	response["account"] = account
+	response["data"] = account
 	return response
 }
 
@@ -125,8 +125,8 @@ func Login(email, password string) map[string]interface{} {
 	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
 	account.Token = tokenString //Store the token in the response
 
-	resp := u.Message(true, "Logged In")
-	resp["account"] = account
+	resp := u.Message(true, "logged in")
+	resp["data"] = account
 	return resp
 }
 
