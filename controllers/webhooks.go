@@ -179,11 +179,10 @@ func DeleteAddress(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
 	address := &models.Address{}
 	address.UserId = user
+	address.Address = r.FormValue("address")
 
-	err := json.NewDecoder(r.Body).Decode(address)
-	if err != nil {
-		fmt.Println(err)
-		u.Respond(w, u.Message(false, "DeleteAddress: Error while decoding request body"))
+	if len(address.Address) == 0 {
+		u.Respond(w, u.Message(false, "DeleteAddress: address is required as query param"))
 		return
 	}
 
@@ -245,12 +244,11 @@ func AddWebhook(w http.ResponseWriter, r *http.Request) {
 func DeleteWebhook(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint)
 	webhookReq := &DeleteBody{}
+	webhookReq.Name = r.FormValue("name")
 
-	err := json.NewDecoder(r.Body).Decode(webhookReq)
-	if err != nil {
-		fmt.Println(err)
+	if len(webhookReq.Name) == 0 {
 		w.WriteHeader(http.StatusNotFound)
-		u.Respond(w, u.Message(false, "DeleteWebhook: Error while decoding request body"))
+		u.Respond(w, u.Message(false, "DeleteWebhook: webhook is required as query param"))
 		return
 	}
 
