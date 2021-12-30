@@ -10,7 +10,7 @@ import (
 type Webhook struct {
 	gorm.Model   `json:"-"`
 	Address      string `json:"address"`
-	Networks     string `json:"networks"`
+	Networks     string `json:"-"`
 	Name         string `json:"name"`
 	Endpoint_Url string `json:"endpoint_url"`
 	UserId       uint   `json:"-"`
@@ -29,15 +29,20 @@ type AddressAuth struct {
 
 func (w *Webhook) ValidateWebhook() (map[string]interface{}, bool) {
 	if w.Address == "" {
-		return u.Message(false, "address should be on the payload"), false
+		return u.Message(false, "'address' value should be on the payload"), false
+	}
+
+	isValidAddress := u.IsValidEthAddress(w.Address)
+	if !isValidAddress {
+		return u.Message(false, "'address' value should be a valid Ethereum address"), false
 	}
 
 	if w.Name == "" {
-		return u.Message(false, "webhook name should be on the payload"), false
+		return u.Message(false, "'name' value should be on the payload"), false
 	}
 
 	if w.Endpoint_Url == "" {
-		return u.Message(false, "endpoint_url should be on the payload"), false
+		return u.Message(false, "'endpoint_url' value should be on the payload"), false
 	}
 
 	if w.UserId <= 0 {

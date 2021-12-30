@@ -216,11 +216,29 @@ func AddWebhook(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(webhook)
 	if err != nil {
 		fmt.Println(err)
+		w.WriteHeader(http.StatusNotFound)
 		u.Respond(w, u.Message(false, "AddWebhook: Error while decoding request body"))
 		return
 	}
 
+	if !AddressIsRegistered(webhook.Address, user) {
+		msg := fmt.Sprintf("address %s is not registered with your account.", webhook.Address)
+		u.Respond(w, u.Message(false, msg))
+		return
+	}
+
+	isRegisteredWebhook := WebhookIsRegistered(webhook.Name, user)
+	if isRegisteredWebhook {
+		msg := fmt.Sprintf("webhook name '%s' is already registered with your account, please choose another name", webhook.Name)
+		u.Respond(w, u.Message(false, msg))
+		return
+	}
+
 	resp := models.CreateWebhook(webhook)
+	if resp["status"] == false {
+		w.WriteHeader(http.StatusNotFound)
+	}
+
 	u.Respond(w, resp)
 }
 
@@ -236,7 +254,7 @@ func DeleteWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if webhookReq.Name == nil {
+	if webhookReq.Name == "" {
 		w.WriteHeader(http.StatusNotFound)
 		u.Respond(w, u.Message(false, "name property is required"))
 		return
