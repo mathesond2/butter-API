@@ -182,7 +182,7 @@ func DeleteAddress(w http.ResponseWriter, r *http.Request) {
 	address.Address = r.FormValue("address")
 
 	if len(address.Address) == 0 {
-		u.Respond(w, u.Message(false, "DeleteAddress: address is required as query param"))
+		u.Respond(w, u.Message(false, "DeleteAddress: address is required as query parameter"))
 		return
 	}
 
@@ -248,7 +248,7 @@ func DeleteWebhook(w http.ResponseWriter, r *http.Request) {
 
 	if len(webhookReq.Name) == 0 {
 		w.WriteHeader(http.StatusNotFound)
-		u.Respond(w, u.Message(false, "DeleteWebhook: webhook is required as query param"))
+		u.Respond(w, u.Message(false, "DeleteWebhook: webhook is required as query parameter"))
 		return
 	}
 
