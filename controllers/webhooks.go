@@ -88,11 +88,13 @@ func AddAddress(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(address)
 	if err != nil {
 		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		u.Respond(w, u.Message(false, "addAddress: Error while decoding request body"))
 		return
 	}
 
 	if !u.IsValidEthAddress(address.Address) {
+		w.WriteHeader(http.StatusBadRequest)
 		u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
 		return
 	}
@@ -105,6 +107,7 @@ func AddAddress(w http.ResponseWriter, r *http.Request) {
 
 	watchAddressRes := WatchAddress(address.Address)
 	if watchAddressRes != "success" { //response body from blocknative endpoint
+		w.WriteHeader(http.StatusBadRequest)
 		u.Respond(w, u.Message(false, watchAddressRes))
 		return
 	}
