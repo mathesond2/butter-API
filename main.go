@@ -21,29 +21,29 @@ func main() {
 	r := mux.NewRouter()
 
 	//Private
-	r.HandleFunc("/api/webhooks/mempoolEvent", c.ParseMempoolEvent).Methods("POST")
-	r.HandleFunc("/api/webhooks/updateInvoiceStatusFromEvent", c.UpdateInvoiceStatusFromEvent).Methods("POST") //prob should be put
-	r.HandleFunc("/api/invoice/status", c.UpdateInvoiceStatusAsPending).Methods("POST")
+	r.HandleFunc("/webhooks/mempoolEvent", c.ParseMempoolEvent).Methods("POST")
+	r.HandleFunc("/webhooks/updateInvoiceStatusFromEvent", c.UpdateInvoiceStatusFromEvent).Methods("POST") //prob should be put
+	r.HandleFunc("/invoice/status", c.UpdateInvoiceStatusAsPending).Methods("POST")
 
 	//Public
-	r.HandleFunc("/api/user", c.CreateAccount).Methods("POST")
-	r.HandleFunc("/api/user/login", c.Authenticate).Methods("POST")
+	r.HandleFunc("/user", c.CreateAccount).Methods("POST")
+	r.HandleFunc("/user/login", c.Authenticate).Methods("POST")
 
-	r.HandleFunc("/api/address", c.AddAddress).Methods("POST")
-	r.HandleFunc("/api/address", c.DeleteAddress).Methods("DELETE")
-	r.HandleFunc("/api/addresses", c.GetAddresses).Methods("GET")
+	r.HandleFunc("/address", c.AddAddress).Methods("POST")
+	r.HandleFunc("/address", c.DeleteAddress).Methods("DELETE")
+	r.HandleFunc("/addresses", c.GetAddresses).Methods("GET")
 
-	r.HandleFunc("/api/webhooks", c.AddWebhook).Methods("POST")
-	r.HandleFunc("/api/webhooks", c.DeleteWebhook).Methods("DELETE")
-	r.HandleFunc("/api/webhooks", c.GetWebhooks).Methods("GET")
+	r.HandleFunc("/webhooks", c.AddWebhook).Methods("POST")
+	r.HandleFunc("/webhooks", c.DeleteWebhook).Methods("DELETE")
+	r.HandleFunc("/webhooks", c.GetWebhooks).Methods("GET")
 
-	r.HandleFunc("/api/invoice", c.CreateInvoice).Methods("POST")
-	r.HandleFunc("/api/invoice", c.UpdateInvoice).Methods("PUT")
-	r.HandleFunc("/api/invoice", c.DeleteInvoice).Methods("DELETE")
-	r.HandleFunc("/api/invoice", c.GetInvoice).Methods("GET")
-	r.HandleFunc("/api/invoices", c.GetInvoices).Methods("GET")
+	r.HandleFunc("/invoice", c.CreateInvoice).Methods("POST")
+	r.HandleFunc("/invoice", c.UpdateInvoice).Methods("PUT")
+	r.HandleFunc("/invoice", c.DeleteInvoice).Methods("DELETE")
+	r.HandleFunc("/invoice", c.GetInvoice).Methods("GET")
+	r.HandleFunc("/invoices", c.GetInvoices).Methods("GET")
 
-	r.HandleFunc("/api/health", c.Health).Methods("GET")
+	r.HandleFunc("/health", c.Health).Methods("GET")
 
 	r.Use(app.JwtAuthentication)
 

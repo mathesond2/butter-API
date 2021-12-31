@@ -15,19 +15,19 @@ import (
 var JwtAuthentication = func(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		notAuth := []string{
-			"/api/user",
-			"/api/user/login",
-			"/api/health",
-			"/api/webhooks/mempoolEvent",
-			"/api/webhooks/updateInvoiceStatusFromEvent",
-			"/api/invoice/status",
+			"/user",
+			"/user/login",
+			"/health",
+			"/webhooks/mempoolEvent",
+			"/webhooks/updateInvoiceStatusFromEvent",
+			"/invoice/status",
 		}
 
 		requestPath := r.URL.Path
 		idQueryParam := r.FormValue("id")
 		requestMethod := r.Method
 
-		if idQueryParam != "" && requestPath == "/api/invoice" && requestMethod != "DELETE" {
+		if idQueryParam != "" && requestPath == "/invoice" && requestMethod != "DELETE" {
 			next.ServeHTTP(w, r)
 			return
 		}
