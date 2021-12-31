@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	u "go-invoices/utils"
+	"strings"
 
 	"github.com/jinzhu/gorm"
 )
@@ -43,6 +44,11 @@ func (w *Webhook) ValidateWebhook() (map[string]interface{}, bool) {
 
 	if w.Endpoint_Url == "" {
 		return u.Message(false, "'endpoint_url' value should be on the payload"), false
+	}
+
+	hasProtocol := strings.HasPrefix(w.Endpoint_Url, "http://") || strings.HasPrefix(w.Endpoint_Url, "https://")
+	if w.Endpoint_Url == "" || !hasProtocol {
+		return u.Message(false, "a protocolized 'endpoint_url' value should be on the payload"), false
 	}
 
 	if w.UserId <= 0 {
