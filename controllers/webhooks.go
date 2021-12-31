@@ -182,16 +182,19 @@ func DeleteAddress(w http.ResponseWriter, r *http.Request) {
 	address.Address = r.FormValue("address")
 
 	if len(address.Address) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
 		u.Respond(w, u.Message(false, "DeleteAddress: address is required as query parameter"))
 		return
 	}
 
 	if !u.IsValidEthAddress(address.Address) {
+		w.WriteHeader(http.StatusBadRequest)
 		u.Respond(w, u.Message(false, "only valid Ethereum addresses are currently accepted"))
 		return
 	}
 
 	if !AddressIsRegistered(address.Address, user) {
+		w.WriteHeader(http.StatusBadRequest)
 		msg := fmt.Sprintf("address %s is not registered with your account.", address.Address)
 		u.Respond(w, u.Message(false, msg))
 		return
