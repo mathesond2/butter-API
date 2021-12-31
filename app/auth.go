@@ -7,7 +7,6 @@ import (
 	u "go-invoices/utils"
 	"net/http"
 	"os"
-	"regexp"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
@@ -23,9 +22,11 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 			"/api/webhooks/updateInvoiceStatusFromEvent",
 			"/api/invoice/status",
 		}
-		requestPath := r.URL.Path
 
-		if matched, _ := regexp.MatchString("/api/.*\\.?/invoice", requestPath); matched {
+		requestPath := r.URL.Path
+		idQueryParam := r.FormValue("id")
+
+		if idQueryParam != "" && requestPath == "/api/invoice" {
 			next.ServeHTTP(w, r)
 			return
 		}
