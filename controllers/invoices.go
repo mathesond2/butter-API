@@ -110,11 +110,23 @@ func DeleteInvoice(w http.ResponseWriter, r *http.Request) {
 	userInfo := &models.UserInfo{}
 	userInfo.UserId = user
 
-	err := json.NewDecoder(r.Body).Decode(userInfo)
-	if err != nil {
-		u.Respond(w, u.Message(false, "Error while decoding request body"))
+	givenId := r.FormValue("id")
+
+	if len(givenId) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		u.Respond(w, u.Message(false, "DeleteInvoice: id is required as query parameter"))
 		return
 	}
+
+	u64, err := strconv.ParseUint(givenId, 10, 32)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		u.Respond(w, u.Message(false, "DeleteInvoice: query parameter 'id' must be a number"))
+		return
+	}
+
+	userInfo.ID = uint(u64)
+
 	data, err := models.DeleteInvoice(userInfo)
 
 	var resp map[string]interface{}
