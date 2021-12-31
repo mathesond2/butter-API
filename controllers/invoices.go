@@ -75,12 +75,14 @@ func CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(invoice)
 	if err != nil {
 		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		u.Respond(w, u.Message(false, "Error while decoding request body"))
 		return
 	}
 
 	ok, msg := PassesAddressAndWebhookChecks(invoice, user)
 	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
 		u.Respond(w, u.Message(false, msg))
 		return
 	}
@@ -96,12 +98,14 @@ func UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(invoice)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		u.Respond(w, u.Message(false, "Error while decoding request body"))
 		return
 	}
 
 	ok, msg := PassesAddressAndWebhookChecks(invoice, user)
 	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
 		u.Respond(w, u.Message(false, msg))
 		return
 	}
@@ -118,7 +122,7 @@ func DeleteInvoice(w http.ResponseWriter, r *http.Request) {
 	givenId := r.FormValue("id")
 
 	if len(givenId) == 0 {
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusBadRequest)
 		u.Respond(w, u.Message(false, "DeleteInvoice: id is required as query parameter"))
 		return
 	}
