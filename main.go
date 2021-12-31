@@ -43,6 +43,8 @@ func main() {
 	r.HandleFunc("/api/invoice", c.GetInvoice).Methods("GET")
 	r.HandleFunc("/api/invoices", c.GetInvoices).Methods("GET")
 
+	r.HandleFunc("/api/health", c.Health).Methods("GET")
+
 	r.Use(app.JwtAuthentication)
 
 	r.NotFoundHandler = http.HandlerFunc(NotFound)

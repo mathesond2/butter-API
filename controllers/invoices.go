@@ -9,6 +9,11 @@ import (
 	"strconv"
 )
 
+func Health(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(200)
+	w.Write([]byte("OK"))
+}
+
 func hasRegisteredAddress(a1 string, a2 string, user uint) bool {
 	res1 := AddressIsRegistered(a1, user)
 	res2 := AddressIsRegistered(a2, user)
