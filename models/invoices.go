@@ -61,7 +61,7 @@ func (i *Invoice) CreateInvoice() map[string]interface{} {
 
 	GetDB().Create(i)
 	resp := u.Message(true, "success")
-	resp["invoice"] = i
+	resp["data"] = i
 	return resp
 }
 
@@ -96,7 +96,7 @@ func UpdateInvoice(reqinvoice *Invoice) map[string]interface{} {
 	}
 
 	resp := u.Message(true, "success")
-	resp["invoice"] = invoice
+	resp["data"] = invoice
 	return resp
 }
 
