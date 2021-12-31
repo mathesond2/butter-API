@@ -261,6 +261,9 @@ func DeleteWebhook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := models.DeleteWebhook(webhookReq.Name, user)
+	if resp["data"] == nil {
+		w.WriteHeader(http.StatusNotFound)
+	}
 	u.Respond(w, resp)
 }
 
