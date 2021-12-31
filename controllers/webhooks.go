@@ -250,7 +250,7 @@ func DeleteWebhook(w http.ResponseWriter, r *http.Request) {
 
 	if len(webhookReq.Name) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		u.Respond(w, u.Message(false, "DeleteWebhook: webhook is required as query parameter"))
+		u.Respond(w, u.Message(false, "DeleteWebhook: 'name' is required as query parameter"))
 		return
 	}
 

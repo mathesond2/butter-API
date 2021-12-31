@@ -182,16 +182,18 @@ func DeleteWebhook(name string, userId uint) map[string]interface{} {
 	err := record.First(webhook).Error
 	if err != nil {
 		fmt.Println("DeleteInvoice find error: ", err)
-		resp := u.Message(true, "success")
-		resp["data"] = err.Error()
+		returnErr := err.Error()
+		resp := u.Message(true, returnErr)
+		resp["data"] = nil
 		return resp
 	}
 
 	deleteErr := record.Delete(webhook).Error
 	if deleteErr != nil {
 		fmt.Println("DeleteInvoice delete error: ", deleteErr)
-		resp := u.Message(true, "success")
-		resp["data"] = deleteErr.Error()
+		returnErr := deleteErr.Error()
+		resp := u.Message(true, returnErr)
+		resp["data"] = nil
 		return resp
 	}
 
