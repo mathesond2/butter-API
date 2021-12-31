@@ -25,8 +25,9 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 
 		requestPath := r.URL.Path
 		idQueryParam := r.FormValue("id")
+		requestMethod := r.Method
 
-		if idQueryParam != "" && requestPath == "/api/invoice" {
+		if idQueryParam != "" && requestPath == "/api/invoice" && requestMethod != "DELETE" {
 			next.ServeHTTP(w, r)
 			return
 		}
