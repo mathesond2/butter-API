@@ -59,11 +59,12 @@ func main() {
 
 	credentials := handlers.AllowCredentials()
 	//no AllowedHeaders for now?
-	methods := handlers.AllowedMethods([]string{"POST", "GET"})
+	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	methods := handlers.AllowedMethods([]string{"POST", "GET", "OPTIONS"})
 	// ttl := handlers.MaxAge(3600)
-	origins := handlers.AllowedOrigins([]string{"www.justbutter.co", "http://localhost:3000", "http://justbutter.co", "http://www.justbutter.co"})
+	origins := handlers.AllowedOrigins([]string{"www.justbutter.co", "http://localhost:3000", "http://localhost:3000/pay/3", "http://justbutter.co", "http://www.justbutter.co"})
 
-	err := http.ListenAndServe(":"+port, handlers.CORS(credentials, methods, origins)(r))
+	err := http.ListenAndServe(":"+port, handlers.CORS(credentials, allowedHeaders, methods, origins)(r))
 	if err != nil {
 		fmt.Print(err)
 	}
