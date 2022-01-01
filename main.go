@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
@@ -56,7 +57,13 @@ func main() {
 
 	fmt.Println(port)
 
-	err := http.ListenAndServe(":"+port, r)
+	credentials := handlers.AllowCredentials()
+	//no AllowedHeaders for now?
+	methods := handlers.AllowedMethods([]string{"POST", "GET"})
+	// ttl := handlers.MaxAge(3600)
+	origins := handlers.AllowedOrigins([]string{"www.justbutter.co", "http://localhost:3000", "http://justbutter.co", "http://www.justbutter.co"})
+
+	err := http.ListenAndServe(":"+port, handlers.CORS(credentials, methods, origins)(r))
 	if err != nil {
 		fmt.Print(err)
 	}
