@@ -1,0 +1,811 @@
+openapi: 3.0.0
+info:
+  description: |
+    Setup:
+    1. create an account
+    2. add auth token from account
+    3. add a valid Ethereum address to your account
+    4. (optional) add a webhook to be notified of invoice payments
+    5. create invoices
+    6. (forthcoming) send invoice links
+    7. get paid!
+
+  version: 1.0.1
+  title: Butter API
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: mathesond2@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+  - name: user
+    description: create and log into accounts
+  - name: address
+    description: Ethereum wallet adddresses to be used in your invoices
+  - name: webhooks
+    description: webhooks to be triggered upon invoice payment updates
+  - name: invoice
+    description: keep track of incoming/outgoing payments
+paths:
+  /user:
+    post:
+      tags:
+        - user
+      summary: create new account
+      operationId: createAccount
+      requestBody:
+        $ref: '#/components/requestBodies/AccountCredentials'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account:
+                    $ref: '#/components/schemas/AccountDetail'
+                  message:
+                    type: string
+                  status:
+                    type: boolean
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: log into account
+      operationId: loginAccount
+      requestBody:
+        $ref: '#/components/requestBodies/AccountCredentials'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account:
+                    $ref: '#/components/schemas/AccountDetail'
+                  message:
+                    type: string
+                    example: logged in
+                  status:
+                    type: boolean
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+  /addresses:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - address
+      summary: get all account addresses
+      operationId: getAddresses
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AddressDetail'
+                  message:
+                    type: string
+                  status:
+                    type: boolean
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ForbiddenObject'
+  /address:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - address
+      summary: add address to account
+      operationId: addAddress
+      requestBody:
+        $ref: '#/components/requestBodies/Address'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AddressDetail'
+                  message:
+                    type: string
+                  status:
+                    type: boolean
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ForbiddenObject'
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - address
+      summary: delete address from account
+      operationId: deleteAddress
+      parameters:
+        - name: address
+          in: query
+          description: an Ethereum address already registered with your account
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    example: address 0xAddress has been deleted
+                  message:
+                    type: string
+                    example: success
+                  status:
+                    type: boolean
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ForbiddenObject'
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+  /webhooks:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - webhooks
+      summary: get all account webhooks
+      operationId: getWebhooks
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WebhookDetail'
+                  message:
+                    type: string
+                  status:
+                    type: boolean
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ForbiddenObject'
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - webhooks
+      summary: create new webhook
+      operationId: createWebhook
+      requestBody:
+        $ref: '#/components/requestBodies/Webhooks'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WebhookDetail'
+                  message:
+                    type: string
+                  status:
+                    type: boolean
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - webhooks
+      summary: delete a webhook
+      operationId: deleteWebhook
+      parameters:
+        - name: name
+          in: query
+          description: an existing webhook name already registered with your account
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    example: "webhook successfully deleted"
+                  message:
+                    type: string
+                  status:
+                    type: boolean
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+  /invoices:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - invoice
+      summary: get all account invoices
+      operationId: getInvoices
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InvoiceDetail'
+                  message:
+                    type: string
+                    example: success
+                  status:
+                    type: boolean
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ForbiddenObject'
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+  /invoice:
+    get:
+      tags:
+        - invoice
+      summary: get invoice
+      operationId: getInvoice
+      parameters:
+        - name: id
+          in: query
+          description: an existing invoice ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/InvoiceDetail'
+                  message:
+                    type: string
+                    example: success
+                  status:
+                    type: boolean
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ForbiddenObject'
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - invoice
+      summary: create new invoice
+      operationId: createInvoice
+      requestBody:
+        $ref: '#/components/requestBodies/Invoices'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/InvoiceDetail'
+                  message:
+                    type: string
+                    example: success
+                  status:
+                    type: boolean
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ForbiddenObject'
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - invoice
+      summary: update existing invoice
+      operationId: updateInvoice
+      requestBody:
+        $ref: '#/components/requestBodies/InvoicesUpdate'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/InvoiceDetail'
+                  message:
+                    type: string
+                    example: success
+                  status:
+                    type: boolean
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ForbiddenObject'
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - invoice
+      summary: delete an invoice
+      operationId: deleteInvoice
+      parameters:
+        - name: id
+          in: query
+          description: an existing invoice ID
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    example: "invoice successfully deleted"
+                  message:
+                    type: string
+                  status:
+                    type: boolean
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+servers:
+  - url: http://api.justbutter.co/
+components:
+  requestBodies:
+    AccountCredentials:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AccountCredentials'
+      required: true
+    Address:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Address'
+      required: true
+    Webhooks:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WebhookDetail'
+      required: true
+    Invoices:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InvoiceRequest'
+      required: true
+    InvoicesUpdate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InvoiceUpdateRequest'
+      required: true
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AccountCredentials:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: pad@justbutter.com
+        password:
+          type: string
+          example: sixCharactersMinimum
+          format: password
+    AccountDetail:
+      type: object
+      required:
+        - email
+        - password
+        - token
+      properties:
+        email:
+          type: string
+          example: hi@justbutter.co
+        password:
+          type: string
+          format: password
+        token:
+          type: string
+    Address:
+      type: object
+      required:
+        - address
+      properties:
+        address:
+          type: string
+          description: address must be a valid Ethereum address (42 characters long)
+          example: 0xAddress
+    ForbiddenObject:
+      type: object
+      required:
+        - message
+        - status
+      properties:
+        message:
+          type: string
+          example: "Missing auth token"
+        status:
+          type: boolean
+          example: false
+      xml:
+        name: ForbiddenObject
+    AddressDetail:
+      type: object
+      required:
+        - address
+      properties:
+        address:
+          type: string
+          example: 0xAddress
+    ErrorObject:
+      type: object
+      required:
+        - data
+        - message
+        - status
+      properties:
+        data:
+          type: string
+          example: null
+        message:
+          type: string
+          example: Invalid request
+        status:
+          type: boolean
+          example: false
+    WebhookDetail:
+      type: object
+      required:
+        - address
+        - name
+        - endpoint_url
+      properties:
+        address:
+          type: string
+          example: 0xAddress
+        name:
+          type: string
+        endpoint_url:
+          type: string
+    InvoiceRequest:
+      type: object
+      required:
+        - name
+        - description
+        - sender_address
+        - token_address
+        - amount
+        - to
+        - recipient_address
+        - status
+        - webhook_name
+      properties:
+        name:
+          type: string
+          example: My Company's Name
+        description:
+          type: string
+          example: Product Design consultation on 4/1/2022
+        sender_address:
+          type: string
+          example: 0xAddress
+        token_address:
+          type: string
+          example: 0xTokenContractAddress
+        amount:
+          type: number
+          example: 0.000025
+        to:
+          type: string
+          example: Company B
+        recipient_address:
+          type: string
+          example: 0xAddressOfCompanyB
+        status:
+          type: string
+          enum:
+            - unpaid
+            - paid
+          example: "unpaid"
+        webhook_name:
+          type: string
+          example: my webhook name
+    InvoiceUpdateRequest:
+      type: object
+      required:
+        - name
+        - description
+        - sender_address
+        - token_address
+        - amount
+        - to
+        - recipient_address
+        - status
+        - ID
+        - webhook_name
+      properties:
+        name:
+          type: string
+          example: My Company's Name
+        description:
+          type: string
+          example: Product Design consultation on 4/1/2022
+        sender_address:
+          type: string
+          example: 0xAddress
+        token_address:
+          type: string
+          example: 0xTokenContractAddress
+        amount:
+          type: number
+          example: 0.000025
+        to:
+          type: string
+          example: Company B
+        recipient_address:
+          type: string
+          example: 0xAddressOfCompanyB
+        status:
+          type: string
+          enum:
+            - unpaid
+            - paid
+          example: "unpaid"
+        ID:
+          type: integer
+          example: 5
+        webhook_name:
+          type: string
+          example: my webhook name
+    InvoiceDetail:
+      type: object
+      required:
+        - ID
+        - CreatedAt
+        - UpdatedAt
+        - DeletedAt
+        - name
+        - description
+        - user_id
+        - sender_address
+        - token_address
+        - amount
+        - to
+        - recipient_address
+        - status
+        - webhook_name
+      properties:
+        ID:
+          type: integer
+          example: 14
+        CreatedAt:
+          type: string
+          format: date-time
+          example: '2022-03-31T18:28:08.025084-05:00'
+        UpdatedAt:
+          type: string
+          format: date-time
+          example: '2022-03-31T18:28:08.025084-05:00'
+        DeletedAt:
+          type: string
+          format: date-time
+        name:
+          type: string
+          example: My Company's Name
+        description:
+          type: string
+          example: Product Design consultation on 4/1/2022
+        user_id:
+          type: integer
+          example: 19
+        sender_address:
+          type: string
+          example: 0xAddress
+        token_address:
+          type: string
+          example: 0xTokenContractAddress
+        amount:
+          type: number
+          example: 0.000025
+        to:
+          type: string
+          example: Company B
+        recipient_address:
+          type: string
+          example: 0xAddressOfCompanyB
+        status:
+          type: string
+          enum:
+            - unpaid
+            - paid
+          example: "unpaid"
+        webhook_name:
+          type: string
+          example: "my associated webhook name"
