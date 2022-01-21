@@ -47,9 +47,9 @@ func (i *Invoice) ValidateInvoice() (map[string]interface{}, bool) {
 		return u.Message(false, "recipient address should be on the payload"), false
 	}
 
-	if i.Status != "paid" && i.Status != "unpaid" {
-		return u.Message(false, "invoice status must be either 'paid' or 'unpaid'"), false
-	}
+	// if i.Status != "paid" && i.Status != "unpaid" {
+	// 	return u.Message(false, "invoice status must be either 'paid' or 'unpaid'"), false
+	// }
 
 	return u.Message(true, "success"), true
 }
